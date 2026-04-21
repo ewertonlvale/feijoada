@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="description" content="Formulário de adesão — Patrocínio da Feijoada das Famílias 2026.">
+  <?!= include('shared_styles') ?>
+
+  <title>Inscrever Patrocínio — <?= eventData.nome ?></title>
+
+  <style>
+    .form-wrap {
+      max-width: 620px;
+      margin: 2rem auto 3rem;
+      padding: 0 1.2rem;
+    }
+    .form-header {
+      text-align: center;
+      margin-bottom: 1.8rem;
+    }
+    .form-eyebrow {
+      font-family: 'Caveat', cursive;
+      color: var(--brown);
+      font-size: 1.25rem;
+    }
+    .form-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      color: var(--red-dark);
+      margin: 0.2rem 0 0.6rem;
+    }
+    .form-subtitle {
+      color: var(--text-mid);
+      font-size: 0.98rem;
+    }
+
+    .tier-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+      margin-bottom: 1.6rem;
+    }
+    .tier-opt {
+      display: block;
+      position: relative;
+      border: 2px solid var(--beige-dark);
+      background: var(--cream);
+      border-radius: 12px;
+      padding: 0.85rem 0.4rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tier-opt:hover { transform: translateY(-2px); box-shadow: var(--shadow-soft); }
+    .tier-opt input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+    .tier-opt .medal { font-size: 1.6rem; display: block; line-height: 1; margin-bottom: 0.2rem; }
+    .tier-opt .name  { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 0.95rem; color: var(--text-dark); }
+    .tier-opt .val   { font-family: 'Amatic SC', cursive; font-size: 1.5rem; font-weight: 700; color: var(--red-dark); line-height: 1; margin-top: 0.15rem; }
+    .tier-opt.selected-bronze { border-color: var(--bronze); background: rgba(184,115,51,0.06); }
+    .tier-opt.selected-prata  { border-color: var(--prata-dark); background: rgba(155,155,155,0.06); }
+    .tier-opt.selected-ouro   { border-color: var(--ouro-dark);  background: rgba(212,166,59,0.10); }
+
+    .form-card {
+      background: var(--cream);
+      border-radius: var(--radius);
+      padding: 1.6rem 1.4rem;
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--beige-dark);
+    }
+
+    .form-row { margin-bottom: 1.1rem; }
+    .form-row label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-dark);
+      margin-bottom: 0.35rem;
+    }
+    .form-row label .req { color: var(--red); margin-left: 2px; }
+    .form-row input,
+    .form-row textarea {
+      width: 100%;
+      padding: 0.75rem 0.9rem;
+      border: 1.5px solid var(--beige-dark);
+      border-radius: 10px;
+      background: var(--beige-light);
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--text-dark);
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    .form-row input:focus,
+    .form-row textarea:focus {
+      outline: none;
+      border-color: var(--yellow-dark);
+      background: #FFFDF5;
+    }
+    .form-row textarea { min-height: 90px; resize: vertical; }
+    .form-hint {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      margin-top: 0.3rem;
+    }
+
+    .submit-row {
+      display: flex; flex-direction: column; gap: 0.8rem;
+      margin-top: 1.2rem;
+    }
+    .btn-submit {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 0.5rem;
+      background: var(--red);
+      color: var(--cream);
+      border: none;
+      padding: 0.95rem 1.2rem;
+      border-radius: 50px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-submit:hover:not(:disabled) {
+      background: var(--red-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(107,31,31,0.28);
+    }
+    .btn-submit:disabled { opacity: 0.6; cursor: wait; }
+
+    .btn-whatsapp {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 0.5rem;
+      background: transparent;
+      color: var(--green-leaf);
+      border: 2px solid var(--green-leaf);
+      padding: 0.7rem 1.2rem;
+      border-radius: 50px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .btn-whatsapp:hover {
+      background: var(--green-leaf);
+      color: var(--cream);
+    }
+    .btn-whatsapp svg { width: 18px; height: 18px; }
+
+    .form-msg {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .form-msg.show { display: block; }
+    .form-msg.error {
+      background: #FCE4E4;
+      border: 1px solid #E8B4B4;
+      color: #8A1F1F;
+    }
+    .form-msg.info {
+      background: var(--beige-light);
+      border: 1px dashed var(--beige-dark);
+      color: var(--text-mid);
+    }
+
+    .or-divider {
+      display: flex; align-items: center; gap: 1rem;
+      margin: 0.3rem 0 0.3rem;
+      color: var(--text-light);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+    .or-divider::before,
+    .or-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--beige-dark);
+    }
+
+    @media (max-width: 680px) {
+      .tier-selector { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+      .tier-opt { padding: 0.7rem 0.3rem; }
+      .tier-opt .val { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <?!= include('shared_topbar') ?>
+
+  <main class="form-wrap">
+    <div class="form-header">
+      <div class="form-eyebrow">— Inscrição de patrocínio —</div>
+      <h1 class="form-title">Quero apoiar a feijoada</h1>
+      <p class="form-subtitle">
+        Preencha os dados abaixo e nossa equipe entra em contato pelo WhatsApp
+        para confirmar pagamento e envio do logotipo.
+      </p>
+    </div>
+
+    <form id="sponsorForm" class="form-card" novalidate>
+
+      <!-- Seletor de cota -->
+      <div class="tier-selector" id="tierSelector">
+        <? tiers.forEach(function(tier) { ?>
+          <label class="tier-opt" data-slug="<?= tier.slug ?>">
+            <input type="radio" name="cota" value="<?= tier.slug ?>">
+            <span class="medal"><?= tier.emoji ?></span>
+            <span class="name"><?= tier.nome ?></span>
+            <span class="val">R$ <?= tier.valor ?></span>
+          </label>
+        <? }); ?>
+      </div>
+
+      <div class="form-row">
+        <label for="nome">Seu nome <span class="req">*</span></label>
+        <input id="nome" name="nome" type="text" autocomplete="name" maxlength="120" required>
+      </div>
+
+      <div class="form-row">
+        <label for="empresa">Empresa / Marca</label>
+        <input id="empresa" name="empresa" type="text" autocomplete="organization" maxlength="120">
+        <div class="form-hint">Como quer que apareça nos materiais. Deixe em branco se for pessoa física.</div>
+      </div>
+
+      <div class="form-row">
+        <label for="whatsapp">WhatsApp <span class="req">*</span></label>
+        <input id="whatsapp" name="whatsapp" type="tel" autocomplete="tel" placeholder="(86) 9 9999-9999" required>
+      </div>
+
+      <div class="form-row">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" maxlength="160" placeholder="para enviarmos o certificado (opcional)">
+      </div>
+
+      <div class="form-row">
+        <label for="mensagem">Mensagem (opcional)</label>
+        <textarea id="mensagem" name="mensagem" maxlength="800" placeholder="Alguma preferência, dúvida ou pedido especial?"></textarea>
+      </div>
+
+      <div class="submit-row">
+        <button type="submit" class="btn-submit" id="btnSubmit">
+          Enviar inscrição →
+        </button>
+
+        <div class="or-divider">ou</div>
+
+        <a class="btn-whatsapp" id="btnWhatsApp" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+          Falar direto no WhatsApp
+        </a>
+      </div>
+
+      <div id="formMsg" class="form-msg" role="status" aria-live="polite"></div>
+    </form>
+  </main>
+
+  <footer class="parish-footer">
+    <? if (img && img.logo) { ?>
+      <img class="parish-logo" src="<?= img.logo ?>" alt="<?= eventData.paroquia ?>">
+    <? } ?>
+    <div class="parish-name"><?= eventData.paroquia ?></div>
+    <div class="parish-sub"><?= eventData.cidade ?> — Renascença</div>
+    <div class="hashtag"><?= eventData.hashtag ?></div>
+  </footer>
+
+  <script>
+    // Parâmetros vindos do server
+    var SCRIPT_URL    = <?= JSON.stringify(scriptUrl) ?>;
+    var INITIAL_COTA  = <?= JSON.stringify(String(params.cota || '').toLowerCase()) ?>;
+    var WHATSAPP_NUM  = <?= JSON.stringify(config.WHATSAPP) ?>;
+    var EVENTO_NOME   = <?= JSON.stringify(eventData.nome) ?>;
+    var TIER_VALORES  = <?= JSON.stringify((function(){
+      var m = {};
+      tiers.forEach(function(t){ m[t.slug] = { nome: t.nome, valor: t.valor }; });
+      return m;
+    })()) ?>;
+
+    var VALID_TIERS = Object.keys(TIER_VALORES);
+
+    // ── Tier selector ──
+    var selector = document.getElementById('tierSelector');
+    var opts = selector.querySelectorAll('.tier-opt');
+    function setTier(slug) {
+      if (!slug || VALID_TIERS.indexOf(slug) === -1) slug = 'prata';
+      opts.forEach(function(opt) {
+        var isSel = opt.getAttribute('data-slug') === slug;
+        opt.classList.toggle('selected-bronze', isSel && slug === 'bronze');
+        opt.classList.toggle('selected-prata',  isSel && slug === 'prata');
+        opt.classList.toggle('selected-ouro',   isSel && slug === 'ouro');
+        var input = opt.querySelector('input');
+        if (input) input.checked = isSel;
+      });
+      updateWhatsAppLink();
+    }
+    opts.forEach(function(opt) {
+      opt.addEventListener('click', function() {
+        setTier(opt.getAttribute('data-slug'));
+      });
+    });
+
+    // Pre-seleciona a cota vinda da URL (default: prata)
+    setTier(INITIAL_COTA || 'prata');
+
+    // ── Link WhatsApp dinâmico ──
+    var btnWhatsApp = document.getElementById('btnWhatsApp');
+    function updateWhatsAppLink() {
+      var slug = getSelectedTier();
+      var tier = TIER_VALORES[slug];
+      var msg = tier
+        ? 'Olá! Tenho interesse na cota ' + tier.nome + ' da ' + EVENTO_NOME + '.'
+        : 'Olá! Tenho interesse em apoiar a ' + EVENTO_NOME + '.';
+      btnWhatsApp.href = 'https://wa.me/' + WHATSAPP_NUM + '?text=' + encodeURIComponent(msg);
+    }
+
+    function getSelectedTier() {
+      var sel = selector.querySelector('input:checked');
+      return sel ? sel.value : '';
+    }
+
+    // ── Submit ──
+    var form = document.getElementById('sponsorForm');
+    var btnSubmit = document.getElementById('btnSubmit');
+    var msgBox = document.getElementById('formMsg');
+
+    function showMsg(kind, text) {
+      msgBox.className = 'form-msg show ' + kind;
+      msgBox.textContent = text;
+    }
+    function clearMsg() {
+      msgBox.className = 'form-msg';
+      msgBox.textContent = '';
+    }
+
+    form.addEventListener('submit', function(ev) {
+      ev.preventDefault();
+      clearMsg();
+
+      var cota = getSelectedTier();
+      if (!cota) { showMsg('error', 'Escolha uma cota (Bronze, Prata ou Ouro).'); return; }
+
+      var payload = {
+        cota:     cota,
+        nome:     document.getElementById('nome').value.trim(),
+        empresa:  document.getElementById('empresa').value.trim(),
+        whatsapp: document.getElementById('whatsapp').value.trim(),
+        email:    document.getElementById('email').value.trim(),
+        mensagem: document.getElementById('mensagem').value.trim()
+      };
+
+      if (!payload.nome)     { showMsg('error', 'Informe seu nome.'); return; }
+      if (!payload.whatsapp) { showMsg('error', 'Informe um WhatsApp para contato.'); return; }
+
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Enviando…';
+      showMsg('info', 'Enviando sua inscrição, um momento…');
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (res && res.ok) {
+            // Redireciona para obrigado
+            window.top.location.href = res.redirect || (SCRIPT_URL + '?page=obrigado&cota=' + cota);
+          } else {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = 'Enviar inscrição →';
+            showMsg('error', (res && res.error) || 'Não foi possível enviar. Tente novamente ou use o WhatsApp.');
+          }
+        })
+        .withFailureHandler(function(err) {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Enviar inscrição →';
+          showMsg('error', 'Erro no envio: ' + (err && err.message ? err.message : err) + '. Use o WhatsApp se preferir.');
+        })
+        .registerSponsor(payload);
+    });
+  </script>
+
+</body>
+</html>
