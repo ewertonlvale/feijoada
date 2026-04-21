@@ -16,6 +16,19 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* Respeita usuários com preferência por menos movimento. Zera animações
+ * infinitas do splash (bounce/pulse) e encurta transições de opacidade. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 html, body {
   width: 100%;
   height: 100%;
