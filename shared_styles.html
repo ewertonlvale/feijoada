@@ -1,0 +1,104 @@
+<!-- shared_styles.html — paleta + base reutilizável em todas as páginas -->
+<style>
+  :root {
+    /* Paleta feijoada */
+    --red:        #8B2E2E;
+    --red-dark:   #6B1F1F;
+    --red-deep:   #5A1616;
+    --red-light:  #A8413B;
+    --brown:      #6B3E2E;
+    --brown-light:#8B5E3E;
+    --brown-soft: #A67C5B;
+    --beige:      #F5E6D3;
+    --beige-light:#FBF3E5;
+    --beige-dark: #E8D4B8;
+    --cream:      #FFF8EA;
+    --yellow:     #E8B84E;
+    --yellow-dark:#C89938;
+    --yellow-soft:#F4D06F;
+    --green-leaf: #4C6A3A;
+    --text-dark:  #2B1A12;
+    --text-mid:   #5C4A3E;
+    --text-light: #8C7A6E;
+    --whatsapp:   #25D366;
+
+    /* Tiers */
+    --bronze:      #B87333;
+    --bronze-dark: #8F571F;
+    --prata:       #9B9B9B;
+    --prata-dark:  #6F6F6F;
+    --ouro:        #D4A63B;
+    --ouro-dark:   #A67C12;
+
+    --shadow-soft:  0 4px 18px rgba(91, 31, 31, 0.10);
+    --shadow-hover: 0 10px 36px rgba(91, 31, 31, 0.18);
+    --shadow-card:  0 6px 22px rgba(107, 62, 46, 0.14);
+    --radius: 14px;
+  }
+
+  *  { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background:
+      radial-gradient(circle at 10% 0%,  rgba(232, 184, 78, 0.10) 0%, transparent 35%),
+      radial-gradient(circle at 90% 10%, rgba(139, 46, 46, 0.08) 0%, transparent 40%),
+      var(--beige);
+    color: var(--text-dark);
+    min-height: 100vh;
+    line-height: 1.6;
+    padding-top:    env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  a { color: var(--red-dark); }
+
+  /* Faixa de bandeirinhas — separador decorativo */
+  .banner-faixa {
+    height: 28px;
+    background:
+      repeating-linear-gradient(135deg,
+        var(--yellow)       0,    var(--yellow)       14px,
+        var(--red)          14px, var(--red)          28px,
+        var(--brown-light)  28px, var(--brown-light)  42px,
+        var(--beige-light)  42px, var(--beige-light)  56px);
+    opacity: 0.85;
+  }
+
+  /* Footer paroquial — usado em todas as páginas */
+  .parish-footer {
+    background: var(--red-deep);
+    color: var(--cream);
+    padding: 2.2rem 1.5rem calc(2.2rem + env(safe-area-inset-bottom));
+    text-align: center;
+    margin-top: 3rem;
+    border-top: 4px solid var(--yellow);
+  }
+  .parish-footer .parish-logo {
+    width: 72px; height: 72px;
+    object-fit: contain;
+    margin: 0 auto 0.8rem;
+    display: block;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+  }
+  .parish-footer .parish-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .parish-footer .parish-sub {
+    font-size: 0.85rem;
+    opacity: 0.75;
+    margin-bottom: 1rem;
+  }
+  .parish-footer .hashtag {
+    font-family: 'Caveat', cursive;
+    font-size: 1.4rem;
+    color: var(--yellow);
+  }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Amatic+SC:wght@400;700&family=Caveat:wght@500;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">

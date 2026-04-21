@@ -1,0 +1,16 @@
+# clasp (credenciais locais — NUNCA commit)
+.clasp.json
+.clasprc.json
+
+# Node
+node_modules/
+package-lock.json
+yarn.lock
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+Thumbs.db

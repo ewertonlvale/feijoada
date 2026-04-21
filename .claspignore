@@ -1,0 +1,21 @@
+# Tudo exceto o que deve ir para o Apps Script
+**/**
+!appsscript.json
+!Code.gs
+!Config.gs
+!Sponsors.gs
+!patrocinadores.html
+!inscricao.html
+!obrigado.html
+!lista.html
+!shared_styles.html
+!shared_topbar.html
+
+# Docs e infra de repo ficam só no GitHub
+README.md
+.gitignore
+.clasp.json
+.clasprc.json
+node_modules/**
+.vscode/**
+.idea/**

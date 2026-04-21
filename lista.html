@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="description" content="Patrocinadores confirmados da Feijoada das Famílias 2026.">
+  <?!= include('shared_styles') ?>
+
+  <title>Patrocinadores — <?= eventData.nome ?></title>
+
+  <style>
+    .page-head {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 1rem;
+      text-align: center;
+    }
+    .page-eyebrow {
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+      color: var(--brown);
+    }
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      color: var(--red-dark);
+      margin: 0.2rem 0 0.6rem;
+    }
+    .page-lead {
+      color: var(--text-mid);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .group-section {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+    .group-header {
+      display: flex; align-items: center; gap: 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+    .group-badge {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: var(--shadow-soft);
+    }
+    .group-bronze .group-badge { background: linear-gradient(135deg, var(--bronze) 0%, var(--bronze-dark) 100%); color: var(--cream); }
+    .group-prata  .group-badge { background: linear-gradient(135deg, var(--prata)  0%, var(--prata-dark)  100%); color: var(--cream); }
+    .group-ouro   .group-badge { background: linear-gradient(135deg, var(--ouro)   0%, var(--ouro-dark)   100%); color: var(--cream); }
+    .group-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--red-dark);
+    }
+    .group-count {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      margin-left: auto;
+      font-weight: 600;
+    }
+
+    .sponsors-grid {
+      display: grid;
+      gap: 1rem;
+    }
+    .group-ouro   .sponsors-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    .group-prata  .sponsors-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    .group-bronze .sponsors-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+
+    .sponsor-card {
+      background: var(--cream);
+      border-radius: 12px;
+      border: 1.5px solid var(--beige-dark);
+      padding: 1.1rem 1rem;
+      display: flex; flex-direction: column; align-items: center; gap: 0.45rem;
+      text-align: center;
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.2s ease;
+    }
+    .sponsor-card:hover { transform: translateY(-3px); }
+    .sponsor-logo {
+      width: 100%;
+      aspect-ratio: 3 / 2;
+      background: var(--beige-light);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .sponsor-logo img {
+      max-width: 90%; max-height: 90%;
+      object-fit: contain;
+    }
+    .sponsor-logo .initials {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: var(--brown);
+    }
+    .sponsor-name {
+      font-weight: 700;
+      color: var(--text-dark);
+      font-size: 0.95rem;
+      line-height: 1.3;
+    }
+    .sponsor-msg {
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--brown);
+      line-height: 1.3;
+      margin-top: 0.2rem;
+    }
+
+    .group-bronze .sponsor-card { border-color: rgba(184,115,51,0.30); }
+    .group-prata  .sponsor-card { border-color: rgba(155,155,155,0.45); }
+    .group-ouro   .sponsor-card { border-color: var(--ouro); background: linear-gradient(180deg, rgba(212,166,59,0.08) 0%, var(--cream) 35%); }
+
+    .state-box {
+      max-width: 620px;
+      margin: 2rem auto;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      background: var(--cream);
+      border: 2px dashed var(--beige-dark);
+      border-radius: var(--radius);
+      color: var(--text-mid);
+    }
+    .state-box .state-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--red-dark);
+      margin-bottom: 0.5rem;
+    }
+    .state-box .state-sub {
+      font-family: 'Caveat', cursive;
+      font-size: 1.2rem;
+      color: var(--brown);
+      margin-bottom: 0.8rem;
+    }
+    .state-box .btn-cta {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.7rem 1.3rem;
+      background: var(--red);
+      color: var(--cream);
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+    .state-box .btn-cta:hover { background: var(--red-dark); transform: translateY(-2px); }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-light);
+      font-family: 'Caveat', cursive;
+      font-size: 1.3rem;
+    }
+  </style>
+</head>
+<body>
+
+  <?!= include('shared_topbar') ?>
+
+  <header class="page-head">
+    <div class="page-eyebrow">— Com muito obrigado a —</div>
+    <h1 class="page-title">Nossos patrocinadores</h1>
+    <p class="page-lead">
+      Conheça as empresas e pessoas que estão fazendo a <?= eventData.nome ?> 2026 acontecer.
+    </p>
+  </header>
+
+  <div class="banner-faixa" aria-hidden="true"></div>
+
+  <div id="content">
+    <div class="loading">Carregando patrocinadores…</div>
+  </div>
+
+  <footer class="parish-footer">
+    <? if (img && img.logo) { ?>
+      <img class="parish-logo" src="<?= img.logo ?>" alt="<?= eventData.paroquia ?>">
+    <? } ?>
+    <div class="parish-name"><?= eventData.paroquia ?></div>
+    <div class="parish-sub"><?= eventData.cidade ?> — Renascença</div>
+    <div class="hashtag"><?= eventData.hashtag ?></div>
+  </footer>
+
+  <script>
+    var SCRIPT_URL = <?= JSON.stringify(scriptUrl) ?>;
+    var TIERS_ORDER = ['ouro', 'prata', 'bronze'];
+    var TIER_LABELS = {
+      ouro:   { label: 'Ouro',   emoji: '🥇' },
+      prata:  { label: 'Prata',  emoji: '🥈' },
+      bronze: { label: 'Bronze', emoji: '🥉' }
+    };
+
+    var content = document.getElementById('content');
+
+    function initials(name) {
+      var s = (name || '').trim();
+      if (!s) return '?';
+      var parts = s.split(/\s+/).slice(0, 2);
+      return parts.map(function(p){ return p[0] ? p[0].toUpperCase() : ''; }).join('');
+    }
+
+    function escapeHtml(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    function renderEmpty() {
+      content.innerHTML =
+        '<div class="state-box">' +
+          '<div class="state-sub">— Ainda sem confirmados —</div>' +
+          '<div class="state-title">Seja o primeiro a apoiar!</div>' +
+          '<p>Sua marca ou nome em destaque enquanto construímos essa festa juntos.</p>' +
+          '<a class="btn-cta" href="' + SCRIPT_URL + '?page=patrocinadores">Ver cotas</a>' +
+        '</div>';
+    }
+
+    function renderError(msg) {
+      content.innerHTML =
+        '<div class="state-box">' +
+          '<div class="state-title">Não foi possível carregar a lista</div>' +
+          '<p>' + escapeHtml(msg || 'Erro desconhecido.') + '</p>' +
+          '<a class="btn-cta" href="' + SCRIPT_URL + '?page=patrocinadores">Ver cotas</a>' +
+        '</div>';
+    }
+
+    function renderGroup(tierSlug, sponsors) {
+      if (!sponsors.length) return '';
+      var info = TIER_LABELS[tierSlug] || { label: tierSlug, emoji: '🫘' };
+      var html = '<section class="group-section group-' + tierSlug + '">';
+      html += '<div class="group-header">';
+      html += '<div class="group-badge">' + info.emoji + '</div>';
+      html += '<div class="group-title">' + info.label + '</div>';
+      html += '<div class="group-count">' + sponsors.length + ' patrocinador' + (sponsors.length > 1 ? 'es' : '') + '</div>';
+      html += '</div>';
+      html += '<div class="sponsors-grid">';
+      sponsors.forEach(function(s) {
+        var displayName = s.empresa || s.nome || 'Patrocinador';
+        html += '<div class="sponsor-card">';
+        html += '<div class="sponsor-logo">';
+        if (s.logo_url) {
+          html += '<img src="' + escapeHtml(s.logo_url) + '" alt="' + escapeHtml(displayName) + '" loading="lazy">';
+        } else {
+          html += '<span class="initials">' + escapeHtml(initials(displayName)) + '</span>';
+        }
+        html += '</div>';
+        html += '<div class="sponsor-name">' + escapeHtml(displayName) + '</div>';
+        if (s.mensagem) {
+          html += '<div class="sponsor-msg">“' + escapeHtml(s.mensagem) + '”</div>';
+        }
+        html += '</div>';
+      });
+      html += '</div></section>';
+      return html;
+    }
+
+    function render(res) {
+      if (!res || !res.ok) {
+        renderError(res && res.error);
+        return;
+      }
+      var sponsors = res.sponsors || [];
+      if (!sponsors.length) { renderEmpty(); return; }
+
+      var byTier = { ouro: [], prata: [], bronze: [] };
+      sponsors.forEach(function(s) {
+        if (byTier[s.cota]) byTier[s.cota].push(s);
+      });
+
+      var html = '';
+      TIERS_ORDER.forEach(function(t) {
+        html += renderGroup(t, byTier[t]);
+      });
+
+      // CTA final
+      html += '<section class="page-head" style="padding-top: 0;">' +
+                '<a class="btn-cta" style="display:inline-block;margin-top:1rem;padding:0.85rem 1.6rem;background:var(--red);color:var(--cream);border-radius:50px;text-decoration:none;font-weight:700;" href="' + SCRIPT_URL + '?page=patrocinadores">' +
+                  'Também quero apoiar →' +
+                '</a>' +
+              '</section>';
+
+      content.innerHTML = html;
+    }
+
+    google.script.run
+      .withSuccessHandler(render)
+      .withFailureHandler(function(err) { renderError(err && err.message ? err.message : err); })
+      .listSponsors();
+  </script>
+
+</body>
+</html>
