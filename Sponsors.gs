@@ -21,6 +21,10 @@ const SHEET_HEADERS = [
 
 /**
  * Garante que a aba de patrocinadores existe e tem cabeçalho.
+ * - Se a aba não existir, cria.
+ * - Se a aba existir mas estiver vazia (ex.: usuário renomeou a default
+ *   "Sheet1" para "patrocinadores"), escreve os cabeçalhos.
+ * - Se já houver dados, deixa como está.
  * Retorna a instância da Sheet.
  */
 function _getOrCreateSheet_() {
@@ -28,6 +32,8 @@ function _getOrCreateSheet_() {
   let sheet = ss.getSheetByName(CONFIG.SHEET_NAME);
   if (!sheet) {
     sheet = ss.insertSheet(CONFIG.SHEET_NAME);
+  }
+  if (sheet.getLastRow() === 0) {
     sheet.appendRow(SHEET_HEADERS);
     sheet.setFrozenRows(1);
     const header = sheet.getRange(1, 1, 1, SHEET_HEADERS.length);
@@ -113,7 +119,7 @@ function registerSponsor(data) {
       ok: true,
       cota: tier.slug,
       valor: tier.valor,
-      redirect: urlFor('obrigado', { cota: tier.slug })
+      redirect: siteUrl('obrigado', { cota: tier.slug })
     };
   } catch (err) {
     console.error('registerSponsor falhou:', err);

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <base target="_top">
   <meta charset="UTF-8">
   <meta name="description" content="Patrocínio da Feijoada das Famílias 2026 — cotas Bronze, Prata e Ouro para apoiar o ECC.">
   <?!= include('shared_styles') ?>
@@ -426,7 +425,7 @@
 </head>
 <body>
 
-  <?!= include('shared_topbar') ?>
+  <?!= include('shared_topbar', { siteUrl: siteUrl, currentPage: currentPage, img: img }) ?>
 
   <!-- ── HERO ── -->
   <section class="hero">
@@ -533,7 +532,8 @@
           </div>
           <footer class="tier-footer">
             <a class="tier-cta"
-               href="<?= scriptUrl ?>?page=inscricao&cota=<?= tier.slug ?>">
+               href="<?= siteUrl('inscricao', { cota: tier.slug }) ?>"
+               target="_top">
               Apoiar <?= tier.nome ?> →
             </a>
           </footer>
@@ -566,7 +566,7 @@
 
   <!-- ── CTA galeria ── -->
   <section class="gallery-cta">
-    <a href="<?= scriptUrl ?>?page=lista">
+    <a href="<?= siteUrl('lista') ?>" target="_top">
       🫘 Ver quem já apoiou a feijoada
     </a>
   </section>

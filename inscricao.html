@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <base target="_top">
   <meta charset="UTF-8">
   <meta name="description" content="Formulário de adesão — Patrocínio da Feijoada das Famílias 2026.">
   <?!= include('shared_styles') ?>
@@ -49,16 +48,65 @@
       padding: 0.85rem 0.4rem;
       text-align: center;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease,
+                  border-color 0.2s ease, background 0.2s ease;
     }
     .tier-opt:hover { transform: translateY(-2px); box-shadow: var(--shadow-soft); }
     .tier-opt input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
-    .tier-opt .medal { font-size: 1.6rem; display: block; line-height: 1; margin-bottom: 0.2rem; }
+    .tier-opt .medal { font-size: 1.6rem; display: block; line-height: 1; margin-bottom: 0.2rem;
+                       transition: transform 0.2s ease; }
     .tier-opt .name  { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 0.95rem; color: var(--text-dark); }
     .tier-opt .val   { font-family: 'Amatic SC', cursive; font-size: 1.5rem; font-weight: 700; color: var(--red-dark); line-height: 1; margin-top: 0.15rem; }
-    .tier-opt.selected-bronze { border-color: var(--bronze); background: rgba(184,115,51,0.06); }
-    .tier-opt.selected-prata  { border-color: var(--prata-dark); background: rgba(155,155,155,0.06); }
-    .tier-opt.selected-ouro   { border-color: var(--ouro-dark);  background: rgba(212,166,59,0.10); }
+
+    /* ── Estado selecionado ──
+       Card sobe, borda reforçada, halo colorido por cota e
+       chip "✓ selecionada" flutuando no topo pra deixar 100% claro. */
+    .tier-opt.selected-bronze,
+    .tier-opt.selected-prata,
+    .tier-opt.selected-ouro {
+      transform: translateY(-4px);
+    }
+    .tier-opt.selected-bronze .medal,
+    .tier-opt.selected-prata  .medal,
+    .tier-opt.selected-ouro   .medal {
+      transform: scale(1.15);
+    }
+    .tier-opt.selected-bronze::after,
+    .tier-opt.selected-prata::after,
+    .tier-opt.selected-ouro::after {
+      content: '✓ selecionada';
+      position: absolute;
+      top: -12px; left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Caveat', cursive;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.12rem 0.7rem;
+      border-radius: 999px;
+      background: var(--red-dark);
+      color: var(--cream);
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+      letter-spacing: 0.3px;
+    }
+    .tier-opt.selected-bronze {
+      border-color: var(--bronze-dark);
+      background: linear-gradient(180deg, rgba(184,115,51,0.22) 0%, rgba(184,115,51,0.06) 100%);
+      box-shadow: 0 10px 24px rgba(184,115,51,0.32),
+                  inset 0 0 0 2px rgba(184,115,51,0.25);
+    }
+    .tier-opt.selected-prata {
+      border-color: var(--prata-dark);
+      background: linear-gradient(180deg, rgba(155,155,155,0.22) 0%, rgba(155,155,155,0.06) 100%);
+      box-shadow: 0 10px 24px rgba(120,120,120,0.32),
+                  inset 0 0 0 2px rgba(155,155,155,0.30);
+    }
+    .tier-opt.selected-ouro {
+      border-color: var(--ouro-dark);
+      background: linear-gradient(180deg, rgba(212,166,59,0.30) 0%, rgba(212,166,59,0.10) 100%);
+      box-shadow: 0 10px 24px rgba(212,166,59,0.42),
+                  inset 0 0 0 2px rgba(212,166,59,0.48);
+    }
 
     .form-card {
       background: var(--cream);
@@ -192,7 +240,7 @@
 </head>
 <body>
 
-  <?!= include('shared_topbar') ?>
+  <?!= include('shared_topbar', { siteUrl: siteUrl, currentPage: currentPage, img: img }) ?>
 
   <main class="form-wrap">
     <div class="form-header">
@@ -272,7 +320,6 @@
 
   <script>
     // Parâmetros vindos do server
-    var SCRIPT_URL    = <?= JSON.stringify(scriptUrl) ?>;
     var INITIAL_COTA  = <?= JSON.stringify(String(params.cota || '').toLowerCase()) ?>;
     var WHATSAPP_NUM  = <?= JSON.stringify(config.WHATSAPP) ?>;
     var EVENTO_NOME   = <?= JSON.stringify(eventData.nome) ?>;
@@ -282,11 +329,38 @@
       return m;
     })()) ?>;
 
+    // URL pública da tela de obrigado no domínio custom (GitHub Pages).
+    // Usado como fallback caso o back-end não devolva res.redirect.
+    function buildObrigadoUrl(cota) {
+      var base = <?= JSON.stringify(siteUrl('obrigado')) ?>;
+      return base + (cota ? (base.indexOf('?') >= 0 ? '&' : '?') + 'cota=' + encodeURIComponent(cota) : '');
+    }
+
     var VALID_TIERS = Object.keys(TIER_VALORES);
 
-    // ── Tier selector ──
-    var selector = document.getElementById('tierSelector');
-    var opts = selector.querySelectorAll('.tier-opt');
+    // ── DOM refs (tudo junto pra evitar uso antes da atribuição) ──
+    var selector    = document.getElementById('tierSelector');
+    var opts        = selector.querySelectorAll('.tier-opt');
+    var btnWhatsApp = document.getElementById('btnWhatsApp');
+    var form        = document.getElementById('sponsorForm');
+    var btnSubmit   = document.getElementById('btnSubmit');
+    var msgBox      = document.getElementById('formMsg');
+
+    // ── Helpers ──
+    function getSelectedTier() {
+      var sel = selector.querySelector('input:checked');
+      return sel ? sel.value : '';
+    }
+
+    function updateWhatsAppLink() {
+      var slug = getSelectedTier();
+      var tier = TIER_VALORES[slug];
+      var msg = tier
+        ? 'Olá! Tenho interesse na cota ' + tier.nome + ' da ' + EVENTO_NOME + '.'
+        : 'Olá! Tenho interesse em apoiar a ' + EVENTO_NOME + '.';
+      btnWhatsApp.href = 'https://wa.me/' + WHATSAPP_NUM + '?text=' + encodeURIComponent(msg);
+    }
+
     function setTier(slug) {
       if (!slug || VALID_TIERS.indexOf(slug) === -1) slug = 'prata';
       opts.forEach(function(opt) {
@@ -299,6 +373,20 @@
       });
       updateWhatsAppLink();
     }
+
+    // ── Wire-up ──
+    // Clique no label troca a cota. Cobrimos dois caminhos pra robustez:
+    //   1) 'change' no container — dispara quando o radio muda (inclusive
+    //       via teclado/acessibilidade, e mesmo se o click no <input>
+    //       absoluto dentro do label não chegar a disparar o handler no
+    //       label por algum motivo).
+    //   2) 'click' em cada label — fallback pra casos em que o click em
+    //       um elemento filho do label mata o evento change.
+    selector.addEventListener('change', function(ev) {
+      if (ev.target && ev.target.name === 'cota') {
+        setTier(ev.target.value);
+      }
+    });
     opts.forEach(function(opt) {
       opt.addEventListener('click', function() {
         setTier(opt.getAttribute('data-slug'));
@@ -307,27 +395,6 @@
 
     // Pre-seleciona a cota vinda da URL (default: prata)
     setTier(INITIAL_COTA || 'prata');
-
-    // ── Link WhatsApp dinâmico ──
-    var btnWhatsApp = document.getElementById('btnWhatsApp');
-    function updateWhatsAppLink() {
-      var slug = getSelectedTier();
-      var tier = TIER_VALORES[slug];
-      var msg = tier
-        ? 'Olá! Tenho interesse na cota ' + tier.nome + ' da ' + EVENTO_NOME + '.'
-        : 'Olá! Tenho interesse em apoiar a ' + EVENTO_NOME + '.';
-      btnWhatsApp.href = 'https://wa.me/' + WHATSAPP_NUM + '?text=' + encodeURIComponent(msg);
-    }
-
-    function getSelectedTier() {
-      var sel = selector.querySelector('input:checked');
-      return sel ? sel.value : '';
-    }
-
-    // ── Submit ──
-    var form = document.getElementById('sponsorForm');
-    var btnSubmit = document.getElementById('btnSubmit');
-    var msgBox = document.getElementById('formMsg');
 
     function showMsg(kind, text) {
       msgBox.className = 'form-msg show ' + kind;
@@ -364,8 +431,17 @@
       google.script.run
         .withSuccessHandler(function(res) {
           if (res && res.ok) {
-            // Redireciona para obrigado
-            window.top.location.href = res.redirect || (SCRIPT_URL + '?page=obrigado&cota=' + cota);
+            // Redireciona pra tela de obrigado no domínio custom.
+            // res.redirect já vem pronto do backend (siteUrl('obrigado', {cota})),
+            // mas mantemos um fallback local caso o back-end não devolva nada.
+            var dest = (res && res.redirect) ? res.redirect : buildObrigadoUrl(cota);
+            try {
+              window.top.location.href = dest;
+            } catch (e) {
+              // Cross-origin pode lançar se o top estiver em outro domínio;
+              // mesmo domínio (feijoada-familias.pnscaparecida.com) não lança.
+              window.location.href = dest;
+            }
           } else {
             btnSubmit.disabled = false;
             btnSubmit.textContent = 'Enviar inscrição →';

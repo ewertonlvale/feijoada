@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <base target="_top">
   <meta charset="UTF-8">
   <meta name="description" content="Patrocinadores confirmados da Feijoada das Famílias 2026.">
   <?!= include('shared_styles') ?>
@@ -165,7 +164,7 @@
 </head>
 <body>
 
-  <?!= include('shared_topbar') ?>
+  <?!= include('shared_topbar', { siteUrl: siteUrl, currentPage: currentPage, img: img }) ?>
 
   <header class="page-head">
     <div class="page-eyebrow">— Com muito obrigado a —</div>
@@ -191,7 +190,11 @@
   </footer>
 
   <script>
-    var SCRIPT_URL = <?= JSON.stringify(scriptUrl) ?>;
+    // URLs públicas no domínio custom (GitHub Pages) geradas server-side.
+    // Links dentro desta página usam target="_top" pra sair do iframe do
+    // Apps Script e voltar pro shell correspondente em feijoada-familias.pnscaparecida.com.
+    var SITE_PATROCINADORES = <?= JSON.stringify(siteUrl('patrocinadores')) ?>;
+
     var TIERS_ORDER = ['ouro', 'prata', 'bronze'];
     var TIER_LABELS = {
       ouro:   { label: 'Ouro',   emoji: '🥇' },
@@ -220,7 +223,7 @@
           '<div class="state-sub">— Ainda sem confirmados —</div>' +
           '<div class="state-title">Seja o primeiro a apoiar!</div>' +
           '<p>Sua marca ou nome em destaque enquanto construímos essa festa juntos.</p>' +
-          '<a class="btn-cta" href="' + SCRIPT_URL + '?page=patrocinadores">Ver cotas</a>' +
+          '<a class="btn-cta" href="' + SITE_PATROCINADORES + '" target="_top">Ver cotas</a>' +
         '</div>';
     }
 
@@ -229,7 +232,7 @@
         '<div class="state-box">' +
           '<div class="state-title">Não foi possível carregar a lista</div>' +
           '<p>' + escapeHtml(msg || 'Erro desconhecido.') + '</p>' +
-          '<a class="btn-cta" href="' + SCRIPT_URL + '?page=patrocinadores">Ver cotas</a>' +
+          '<a class="btn-cta" href="' + SITE_PATROCINADORES + '" target="_top">Ver cotas</a>' +
         '</div>';
     }
 
@@ -283,7 +286,7 @@
 
       // CTA final
       html += '<section class="page-head" style="padding-top: 0;">' +
-                '<a class="btn-cta" style="display:inline-block;margin-top:1rem;padding:0.85rem 1.6rem;background:var(--red);color:var(--cream);border-radius:50px;text-decoration:none;font-weight:700;" href="' + SCRIPT_URL + '?page=patrocinadores">' +
+                '<a class="btn-cta" style="display:inline-block;margin-top:1rem;padding:0.85rem 1.6rem;background:var(--red);color:var(--cream);border-radius:50px;text-decoration:none;font-weight:700;" href="' + SITE_PATROCINADORES + '" target="_top">' +
                   'Também quero apoiar →' +
                 '</a>' +
               '</section>';

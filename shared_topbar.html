@@ -1,6 +1,13 @@
 <!-- shared_topbar.html — topbar reutilizável.
-     Requer que o template tenha definido: scriptUrl, currentPage.
-     Uso: <?!= include('shared_topbar') ?>
+     Requer contexto: siteUrl, currentPage, img.
+     Uso (escapado para evitar recursão do template engine):
+       &lt;?!= include('shared_topbar', { siteUrl, currentPage, img }) ?&gt;
+
+     Navegação:
+       Os links apontam para URLs absolutas do domínio custom (siteUrl) com
+       target="_top", forçando o browser a sair do iframe e carregar o shell
+       correspondente (docs/index.html, lista.html, inscricao.html,
+       obrigado.html), que por sua vez embute o Apps Script com ?page=...
 -->
 <style>
   .topbar {
@@ -72,7 +79,7 @@
 
 <header class="topbar">
   <div class="topbar-left">
-    <a class="brand" href="<?= scriptUrl ?>?page=patrocinadores">
+    <a class="brand" href="<?= siteUrl('patrocinadores') ?>" target="_top">
       <? if (img && img.logo) { ?>
         <img class="brand-logo" src="<?= img.logo ?>" alt="Paróquia N. S. Conceição Aparecida">
       <? } ?>
@@ -81,8 +88,8 @@
   </div>
   <nav class="topbar-right">
     <a class="nav-link <?= currentPage === 'patrocinadores' ? 'active' : '' ?>"
-       href="<?= scriptUrl ?>?page=patrocinadores">Cotas</a>
+       href="<?= siteUrl('patrocinadores') ?>" target="_top">Cotas</a>
     <a class="nav-link <?= currentPage === 'lista' ? 'active' : '' ?>"
-       href="<?= scriptUrl ?>?page=lista">Patrocinadores</a>
+       href="<?= siteUrl('lista') ?>" target="_top">Patrocinadores</a>
   </nav>
 </header>

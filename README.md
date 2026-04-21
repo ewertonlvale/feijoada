@@ -30,8 +30,8 @@ Backend no próprio Apps Script:
 ```
 feijoada-familias-2026/
 ├── appsscript.json         # manifesto do Apps Script
-├── Code.gs                 # router doGet + include()
-├── Config.gs               # constantes (evento, tiers, planilha)
+├── Code.gs                 # router doGet + include() + siteUrl()
+├── Config.gs               # constantes (evento, tiers, planilha, CUSTOM_BASE_URL)
 ├── Sponsors.gs             # CRUD da planilha
 ├── patrocinadores.html     # landing (default)
 ├── inscricao.html          # formulário
@@ -39,10 +39,36 @@ feijoada-familias-2026/
 ├── lista.html              # galeria pública
 ├── shared_styles.html      # CSS da paleta feijoada (incluído em todas)
 ├── shared_topbar.html      # topbar reutilizável
-├── .claspignore            # o que não vai para o Apps Script
+├── docs/                   # ⇢ GitHub Pages (custom domain)
+│   ├── index.html          #   shell da rota /
+│   ├── lista.html          #   shell da rota /lista.html
+│   ├── inscricao.html      #   shell da rota /inscricao.html
+│   ├── obrigado.html       #   shell da rota /obrigado.html
+│   ├── shell.css           #   CSS comum (splash, iframe, error-box)
+│   ├── shell.js            #   bootstrap — embute o Apps Script com ?page=...
+│   ├── manifest.json       #   PWA manifest
+│   └── images/             #   logos e ilustrações usadas pelo shell
+├── .claspignore            # o que não vai para o Apps Script (docs/ fica de fora)
 ├── .gitignore              # o que não vai para o Git
 └── README.md
 ```
+
+### Arquitetura de navegação (custom domain + Apps Script)
+
+Cada rota pública (`/`, `/lista.html`, `/inscricao.html`, `/obrigado.html`) tem
+seu próprio HTML em `docs/`, servido pelo GitHub Pages no domínio
+`feijoada-familias.pnscaparecida.com`. Todos eles apenas embutem o Web App
+do Apps Script num `<iframe>` com a querystring `?page=<rota>`, via o
+bootstrap compartilhado `docs/shell.js`.
+
+Dentro do Apps Script, os links de navegação (topbar, botões "Apoiar X",
+"Voltar às cotas", etc.) apontam para URLs absolutas no domínio custom
+geradas server-side pelo helper `siteUrl()` — combinado com `target="_top"`,
+isso faz o browser trocar o shell inteiro em vez de sair do iframe.
+
+Depois de um `clasp push` + nova implantação, basta editar
+`APPS_SCRIPT_URL` em `docs/shell.js` (uma única vez) com a URL `/exec`
+publicada.
 
 ---
 

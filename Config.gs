@@ -13,6 +13,15 @@ const CONFIG = {
   SPREADSHEET_ID: 'COLOQUE_AQUI_O_ID_DA_PLANILHA',
   SHEET_NAME: 'patrocinadores',
 
+  // ───────── DOMÍNIO PÚBLICO (GitHub Pages) ─────────
+  // Base do custom domain onde estão os shells que embutem o Web App
+  // (docs/index.html, docs/lista.html, docs/inscricao.html, docs/obrigado.html).
+  //
+  // Todos os links internos gerados pelo Apps Script usam essa base +
+  // target="_top" pra fazer navegação real do navegador — assim a URL bar
+  // sempre reflete a página aberta e o usuário nunca sai do domínio custom.
+  CUSTOM_BASE_URL: 'https://feijoada-familias.pnscaparecida.com',
+
   // ───────── CONTATO ─────────
   // WhatsApp da equipe responsável pela captação (sem +, sem espaços).
   // Formato: 55 + DDD + número. Ex.: 5586999999999
@@ -29,7 +38,7 @@ const CONFIG = {
   //
   // Se for trocar de host, basta editar a BASE_URL aqui.
   IMAGES: {
-    BASE_URL: 'https://feijoada.pnscaparecida.com/images',
+    BASE_URL: 'https://feijoada-familias.pnscaparecida.com/images',
     PANELA:   'panela-feijoada.png',
     SERTAO:   'sertao-forro.png',
     LOGO:     'logo-paroquia.png',

@@ -30,6 +30,10 @@ function doGet(e) {
   t.tiers       = CONFIG.TIERS;
   t.currentPage = pageKey in ROUTES ? pageKey : 'patrocinadores';
 
+  // Função helper que os templates usam pra gerar links pro custom domain.
+  // Binda com bind() pra garantir o `this` correto no scope do template.
+  t.siteUrl = siteUrl;
+
   // URLs absolutas de cada imagem (já prontas para usar no src="...")
   t.img = {
     panela: _imageUrl_('PANELA'),
@@ -44,21 +48,35 @@ function doGet(e) {
     .setTitle(title)
     .setFaviconUrl('https://www.google.com/images/icons/product/script-48.png')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover')
-    .addMetaTag('theme-color', '#8B2E2E');
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover');
+  // Obs.: HtmlOutput.addMetaTag() só aceita uma lista branca
+  // (viewport, description, author, keywords, generator, application-name).
+  // A meta "theme-color" vive no <head> do docs/index.html (GitHub Pages).
 }
 
 /**
- * Inclui o conteúdo de outro arquivo HTML no template atual.
- * Uso: <?!= include('shared_styles') ?>
+ * Inclui o conteúdo de outro arquivo HTML no template atual, processando
+ * scriptlets (<?= ?>, <? ?>, <?!= ?>). Recebe um objeto opcional com as
+ * variáveis que o template incluído precisa enxergar.
+ *
+ * Uso simples (sem scriptlets no arquivo incluído):
+ *   <?!= include('shared_styles') ?>
+ *
+ * Uso com contexto:
+ *   <?!= include('shared_topbar', { siteUrl: siteUrl, currentPage: currentPage, img: img }) ?>
  */
-function include(filename) {
-  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+function include(filename, context) {
+  const t = HtmlService.createTemplateFromFile(filename);
+  if (context && typeof context === 'object') {
+    Object.keys(context).forEach(function (k) { t[k] = context[k]; });
+  }
+  return t.evaluate().getContent();
 }
 
 /**
- * Constrói uma URL para outra rota do próprio web app.
- * Uso em template: <?= urlFor('inscricao', { cota: 'ouro' }) ?>
+ * Constrói uma URL para outra rota do próprio web app (Apps Script direto).
+ * Uso raro — só quando precisamos mesmo do URL /exec (ex.: redirect server-side).
+ * Para links públicos em templates, prefira siteUrl().
  */
 function urlFor(page, extraParams) {
   const base = ScriptApp.getService().getUrl() || '';
@@ -71,6 +89,45 @@ function urlFor(page, extraParams) {
     }
   }
   return base + '?' + qp.join('&');
+}
+
+/**
+ * Constrói uma URL pública no custom domain (GitHub Pages), usada pelos
+ * templates como destino de <a href> com target="_top".
+ *
+ * Cada rota tem seu próprio shell HTML em docs/:
+ *   patrocinadores → /            (docs/index.html)
+ *   lista          → /lista.html
+ *   inscricao      → /inscricao.html  (ex.: /inscricao.html?cota=ouro)
+ *   obrigado       → /obrigado.html   (ex.: /obrigado.html?cota=ouro)
+ *
+ * Exemplo em template:
+ *   <a href="<?= siteUrl('lista') ?>" target="_top">Patrocinadores</a>
+ *   <a href="<?= siteUrl('inscricao', { cota: 'ouro' }) ?>" target="_top">Apoiar Ouro</a>
+ */
+function siteUrl(page, extraParams) {
+  const base = String(CONFIG.CUSTOM_BASE_URL || '').replace(/\/+$/, '');
+  const paths = {
+    patrocinadores: '/',
+    lista:          '/lista.html',
+    inscricao:      '/inscricao.html',
+    obrigado:       '/obrigado.html'
+  };
+  const path = paths[page] || '/';
+  let url = base + path;
+
+  if (extraParams) {
+    const qp = [];
+    for (const k in extraParams) {
+      if (Object.prototype.hasOwnProperty.call(extraParams, k)) {
+        const v = extraParams[k];
+        if (v === null || v === undefined || v === '') continue;
+        qp.push(encodeURIComponent(k) + '=' + encodeURIComponent(v));
+      }
+    }
+    if (qp.length) url += '?' + qp.join('&');
+  }
+  return url;
 }
 
 /**
