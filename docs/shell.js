@@ -23,7 +23,7 @@
   // ⚠️ EDITE AQUI depois de publicar o Web App:
   //    Apps Script → Implantar → Gerenciar implantações → nova versão
   //    Copie a "URL da Web app" (termina em /exec) e cole abaixo.
-  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/XXXXXXXXXXXXXXXXXXXXXXXXXXXX/exec';
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxaa5CDUxN9aB8_FSstWePBQuuHYJy5nZefhOM6UiHYeOPqg7fCu0t7DyGiSi9cmIsX/exec';
 
   // Lê o data-page do próprio tag <script>
   var currentScript = document.currentScript;
