@@ -218,6 +218,19 @@
           splash.classList.add('hidden');
         }
       }, 12000);
+
+      // ── Navegação via postMessage ──
+      // O iframe (Apps Script) manda { type: 'navigate', qs: 'page=obrigado&cota=prata' }
+      // para redirecionar sem sair do domínio custom.
+      window.addEventListener('message', function (event) {
+        var data = event.data;
+        if (!data || data.type !== 'navigate' || typeof data.qs !== 'string') return;
+        var newQs = data.qs ? ('?' + data.qs.replace(/^[?&]/, '')) : '';
+        frame.src = APPS_SCRIPT_URL + newQs;
+        try {
+          history.replaceState(null, '', '/' + newQs);
+        } catch (e) { /* ignora se cross-origin bloquear */ }
+      });
     })();
   </script>
 </body>
