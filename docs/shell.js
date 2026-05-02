@@ -64,4 +64,31 @@
   setTimeout(function () {
     if (!frame.classList.contains('ready')) hideSplash();
   }, 12000);
+
+  // ─── Handler de mensagens vindas do iframe (Apps Script) ───
+  // O sandbox do Apps Script às vezes intercepta links com target="_top"
+  // renderizados dinamicamente via innerHTML, mostrando um dialog de OAuth
+  // em vez de navegar. Solução: o iframe pede pro shell (este script,
+  // que tem controle total do top frame) fazer a navegação. Funciona
+  // pra qualquer link que precisa sair do iframe.
+  //
+  // Mensagem esperada:
+  //   { type: 'navigate-top', url: 'https://feijoada-familias.pnscaparecida.com/inscricao.html' }
+  //
+  // Por segurança, só aceita URLs do mesmo origin do shell — bloqueia
+  // tentativas de redirecionar pra phishing externo.
+  window.addEventListener('message', function (event) {
+    var data = event.data;
+    if (!data || data.type !== 'navigate-top' || typeof data.url !== 'string') return;
+    try {
+      var u = new URL(data.url, window.location.origin);
+      if (u.origin === window.location.origin) {
+        window.location.href = u.href;
+      } else {
+        console.warn('[shell] navigate-top bloqueado — origem diferente:', u.origin);
+      }
+    } catch (e) {
+      console.warn('[shell] navigate-top URL inválida:', data.url);
+    }
+  });
 })();
