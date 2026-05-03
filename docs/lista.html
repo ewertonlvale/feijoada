@@ -16,23 +16,45 @@
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Feijoada das Famílias 2026">
+  <meta property="og:locale" content="pt_BR">
   <meta property="og:title" content="Patrocinadores — Feijoada das Famílias 2026">
-  <meta property="og:description" content="As empresas e pessoas que estão apoiando a feijoada do ECC.">
-  <meta property="og:image" content="images/panela-feijoada.png">
+  <meta property="og:description" content="As empresas e pessoas que estão apoiando a feijoada do ECC. 17 de Maio · Renascença I.">
   <meta property="og:url" content="https://feijoada-familias.pnscaparecida.com/lista.html">
+  <meta property="og:image" content="https://feijoada-familias.pnscaparecida.com/images/og-image.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Feijoada & Forró das Famílias — 17 de Maio · 2026 · Renascença I, Teresina">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Patrocinadores — Feijoada das Famílias 2026">
+  <meta name="twitter:description" content="As empresas e pessoas que estão apoiando a feijoada do ECC.">
+  <meta name="twitter:image" content="https://feijoada-familias.pnscaparecida.com/images/og-image.jpg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Caveat:wght@500&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="shell.css">
+
+  <!-- Google Analytics 4 — G-Y48R7FT7NE. Ver index.html pra rationale. -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y48R7FT7NE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Y48R7FT7NE');
+  </script>
 </head>
 <body>
 
   <!-- Splash exibido até o iframe carregar -->
   <div id="splash" role="status" aria-live="polite">
-    <img class="splash-logo" src="images/dancando-feijoes.png" alt=""
-         onerror="this.style.display='none'">
+    <picture>
+      <source srcset="images/dancando-feijoes.webp" type="image/webp">
+      <img class="splash-logo" src="images/dancando-feijoes.png" alt=""
+           onerror="this.parentElement.style.display='none'">
+    </picture>
     <div class="splash-title">Feijoada das Famílias</div>
     <div class="splash-sub">— buscando os apoiadores…</div>
     <div class="splash-dots" aria-hidden="true"><span></span><span></span><span></span></div>

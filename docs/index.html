@@ -14,25 +14,52 @@
   <link rel="apple-touch-icon" href="images/logo-paroquia.png">
   <link rel="manifest" href="manifest.json">
 
-  <!-- Open Graph -->
+  <!-- Open Graph (compartilhamento em WhatsApp/Facebook/Telegram/LinkedIn) -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Feijoada das Famílias 2026 — Patrocínio">
-  <meta property="og:description" content="Seja patrocinador da Feijoada das Famílias e apoie o ECC da paróquia.">
-  <meta property="og:image" content="images/panela-feijoada.png">
+  <meta property="og:site_name" content="Feijoada das Famílias 2026">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="Feijoada das Famílias 2026 — 17 de Maio">
+  <meta property="og:description" content="Forró, feijão & comunidade. Seja patrocinador da nossa feijoada e apoie o ECC da Paróquia N. S. Conceição Aparecida.">
   <meta property="og:url" content="https://feijoada-familias.pnscaparecida.com/">
+  <meta property="og:image" content="https://feijoada-familias.pnscaparecida.com/images/og-image.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Feijoada & Forró das Famílias — 17 de Maio · 2026 · Renascença I, Teresina">
+  <!-- Twitter Card (também usado por LinkedIn como fallback) -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Feijoada das Famílias 2026 — 17 de Maio">
+  <meta name="twitter:description" content="Forró, feijão & comunidade. Seja patrocinador da nossa feijoada.">
+  <meta name="twitter:image" content="https://feijoada-familias.pnscaparecida.com/images/og-image.jpg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Caveat:wght@500&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="shell.css">
+
+  <!-- Google Analytics 4 — propriedade G-Y48R7FT7NE.
+       Carregado só nos shells (GitHub Pages) — a iframe do Apps Script
+       NÃO recebe o snippet pra evitar duplicar page views. Como a navegação
+       entre páginas usa target="_top" e recarrega o shell, todo page view
+       da URL bar é capturado naturalmente. -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y48R7FT7NE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Y48R7FT7NE');
+  </script>
 </head>
 <body>
 
   <!-- Splash exibido até o iframe carregar -->
   <div id="splash" role="status" aria-live="polite">
-    <img class="splash-logo" src="images/dancando-feijoes.png" alt=""
-         onerror="this.style.display='none'">
+    <picture>
+      <source srcset="images/dancando-feijoes.webp" type="image/webp">
+      <img class="splash-logo" src="images/dancando-feijoes.png" alt=""
+           onerror="this.parentElement.style.display='none'">
+    </picture>
     <div class="splash-title">Feijoada das Famílias</div>
     <div class="splash-sub">— preparando a panela…</div>
     <div class="splash-dots" aria-hidden="true"><span></span><span></span><span></span></div>
