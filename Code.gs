@@ -388,3 +388,23 @@ function ping() {
     scriptUrl: ScriptApp.getService().getUrl() || '(não publicado)'
   };
 }
+
+/**
+ * Teste/autorização das imagens no Drive. Rode isto do editor (Executar ▶)
+ * UMA vez: ele acessa o Drive (dispara o pedido de permissão que faltava) e
+ * devolve quantas imagens foram encontradas na pasta pública, com exemplos.
+ *
+ * Esperado: totalImagens > 0 e uma urlExemplo que abre a imagem no navegador.
+ * Se der 0 ou erro, confira CONFIG.DRIVE_IMAGES_FOLDER_ID e o compartilhamento
+ * da pasta ("qualquer pessoa com o link").
+ */
+function testeDrive() {
+  var map = _driveImageMap_();
+  var nomes = Object.keys(map);
+  return {
+    pastaId: CONFIG.DRIVE_IMAGES_FOLDER_ID,
+    totalImagens: nomes.length,
+    exemplos: nomes.slice(0, 12),
+    urlExemplo: nomes.length ? map[nomes[0]] : ''
+  };
+}
