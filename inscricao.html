@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="Formulário de adesão — Patrocínio da Feijotacê 2026.">
+  <meta name="description" content="Seja um patrocinador do Feijotacê 2026 — planos Bronze, Prata e Ouro.">
   <?!= include('shared_styles') ?>
 
   <title>Inscrever Patrocínio — <?= eventData.nome ?></title>
@@ -324,11 +324,12 @@
 
   <main class="form-wrap">
     <div class="form-header">
-      <div class="form-eyebrow">— Inscrição de patrocínio —</div>
-      <h1 class="form-title">Quero apoiar a feijoada</h1>
+      <div class="form-eyebrow">— Seja um patrocinador —</div>
+      <h1 class="form-title">Quero apoiar o <?= eventData.nome ?></h1>
       <p class="form-subtitle">
-        Preencha os dados abaixo e nossa equipe entra em contato pelo WhatsApp
-        para confirmar pagamento e envio do logotipo.
+        Os planos de patrocínio da <?= eventData.nome ?> são uma excelente
+        oportunidade para aumentar a visibilidade da sua marca e associá-la a um
+        evento de renome.
       </p>
     </div>
 
@@ -344,296 +345,50 @@
       <? }); ?>
     </div>
 
-    <form id="sponsorForm" class="form-card" novalidate>
+    <style>
+      .contato-card {
+        max-width: 560px; margin: 0 auto;
+        background: var(--cream);
+        border: var(--border-thick) solid var(--yellow);
+        border-radius: var(--radius);
+        padding: 1.8rem 1.5rem;
+        box-shadow: var(--shadow-card);
+        text-align: center;
+      }
+      .contato-card p { color: var(--text-mid); line-height: 1.65; margin-bottom: 0.9rem; font-size: 1rem; }
+      .contato-card p.destaque { font-weight: 700; color: var(--red-dark); margin: 0.4rem 0 1.3rem; }
+      .contato-botoes { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem; }
+      .contato-botoes .wa-btn {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        padding: 0.85rem 1.4rem;
+        background: var(--whatsapp); color: #05361d;
+        border-radius: var(--radius-pill);
+        font-weight: 700; font-size: 0.98rem; text-decoration: none;
+        box-shadow: 0 6px 16px rgba(37,211,102,0.30);
+      }
+      .contato-botoes .wa-btn .icon { width: 20px; height: 20px; }
+      .contato-botoes .wa-btn small { display: block; font-weight: 600; font-size: 0.76rem; opacity: 0.82; }
+    </style>
 
-      <div class="form-row">
-        <label for="nome">Seu nome <span class="req" aria-hidden="true">*</span></label>
-        <input id="nome" name="nome" type="text" autocomplete="name" maxlength="120"
-               required aria-required="true">
+    <div class="contato-card">
+      <p>
+        Escolha o plano que melhor se adapta às suas condições e junte-se a nós
+        para fazer deste evento um grande sucesso.
+      </p>
+      <p class="destaque">Para confirmar o seu patrocínio, fale com a gente no WhatsApp:</p>
+      <div class="contato-botoes">
+        <? config.CONTATOS.forEach(function(c) { ?>
+          <a class="wa-btn" target="_blank" rel="noopener"
+             href="https://wa.me/<?= c.whatsapp ?>?text=<?= encodeURIComponent('Olá! Tenho interesse em patrocinar a ' + eventData.nome + '. Podem me passar mais informações?') ?>">
+            <svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+            <span><?= c.nome ?><small><?= c.numero ?></small></span>
+          </a>
+        <? }); ?>
       </div>
-
-      <div class="form-row">
-        <label for="empresa">Empresa / Marca</label>
-        <input id="empresa" name="empresa" type="text" autocomplete="organization" maxlength="120">
-        <div class="form-hint">Como quer que apareça nos materiais. Deixe em branco se for pessoa física.</div>
-      </div>
-
-      <!-- Seleção de cota — radio buttons nativos, abaixo do nome da empresa -->
-      <div class="form-row">
-        <label for="cota-<?= tiers[0].slug ?>">Cota <span class="req" aria-hidden="true">*</span></label>
-        <div class="cota-options" id="cotaOptions" role="radiogroup" aria-label="Escolha a cota de patrocínio">
-          <? tiers.forEach(function(tier) { ?>
-            <label class="cota-radio">
-              <input type="radio" name="cota" value="<?= tier.slug ?>" id="cota-<?= tier.slug ?>">
-              <span class="cota-radio-name"><?= tier.nome ?></span>
-              <span class="cota-radio-price">R$ <?= tier.valor ?></span>
-            </label>
-          <? }); ?>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <label for="whatsapp">WhatsApp <span class="req" aria-hidden="true">*</span></label>
-        <input id="whatsapp" name="whatsapp" type="tel" autocomplete="tel"
-               placeholder="(86) 9 9999-9999" maxlength="30"
-               required aria-required="true">
-      </div>
-
-      <div class="form-row">
-        <label for="instagram">Instagram</label>
-        <input id="instagram" name="instagram" type="text" autocomplete="off" maxlength="80"
-               placeholder="@suaempresa">
-        <div class="form-hint">Pode informar com ou sem @. Vira botão clicável no seu card.</div>
-      </div>
-
-      <div class="form-row">
-        <label for="endereco">Endereço</label>
-        <input id="endereco" name="endereco" type="text" autocomplete="street-address" maxlength="200"
-               placeholder="Rua, número, bairro">
-        <div class="form-hint">Usamos pra gerar o link do Google Maps no seu card.</div>
-      </div>
-
-      <div class="form-row">
-        <label for="mensagem">Mensagem (opcional)</label>
-        <textarea id="mensagem" name="mensagem" maxlength="800"
-                  placeholder="Alguma preferência, dúvida ou pedido especial?"></textarea>
-      </div>
-
-      <!-- Honeypot: visualmente oculto, humanos não preenchem. -->
-      <div class="hp-field" aria-hidden="true">
-        <label for="hp-website">Não preencha</label>
-        <input id="hp-website" name="website" type="text" tabindex="-1" autocomplete="off">
-      </div>
-
-      <div class="submit-row">
-        <button type="submit" class="btn-submit" id="btnSubmit">
-          Enviar inscrição →
-        </button>
-
-        <div class="or-divider" aria-hidden="true">ou</div>
-
-        <a class="btn-whatsapp" id="btnWhatsApp" href="#" target="_blank" rel="noopener">
-          <svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
-          Falar direto no WhatsApp
-        </a>
-      </div>
-
-      <div id="formMsg" class="form-msg" role="status" aria-live="polite"></div>
-    </form>
+    </div>
   </main>
 
   <?!= include('shared_footer', { eventData: eventData, img: img }) ?>
-
-  <script>
-    'use strict';
-
-    // ╔══════════════════════════════════════════════════════════════════╗
-    // ║  ⚠️  GOTCHA — NÃO USE TEMPLATE LITERALS NESTE BLOCO  ⚠️           ║
-    // ║                                                                  ║
-    // ║  Template literals (backticks) em <script> inline dentro de      ║
-    // ║  templates do Apps Script quebram o document.write da Maestro    ║
-    // ║  (framework client-side do iframe sandbox) com erro genérico:    ║
-    // ║                                                                  ║
-    // ║    Uncaught SyntaxError: Failed to execute 'write' on            ║
-    // ║    'Document': Unexpected identifier 'X'                         ║
-    // ║                                                                  ║
-    // ║  ...onde X é a primeira palavra dentro do template. Tudo que     ║
-    // ║  estiver depois do erro NÃO RODA — listeners não registram,      ║
-    // ║  form não submete, planilha não recebe.                          ║
-    // ║                                                                  ║
-    // ║  CONCATENE com + ao invés de usar `${}`. Veja REFATORACAO.md     ║
-    // ║  seção G1 para o histórico completo do incidente (02/05/2026).   ║
-    // ╚══════════════════════════════════════════════════════════════════╝
-
-    // ── Marcador de deploy ──
-    // Esse log serve só pra confirmar (no DevTools → Console) que o
-    // build atual chegou ao browser depois do clasp push + nova
-    // implantação. Se a string abaixo NÃO aparecer no console, o
-    // navegador ainda está com a versão antiga em cache OU a nova
-    // implantação não foi efetivada no Apps Script.
-    console.log('[inscricao] build 2026-05-02-fix2 carregado · sem template literals');
-
-    // Parâmetros vindos do server
-    const INITIAL_COTA = <?= JSON.stringify(String(params.cota || '').toLowerCase()) ?>;
-    const WHATSAPP_NUM = <?= JSON.stringify(config.WHATSAPP) ?>;
-    const EVENTO_NOME  = <?= JSON.stringify(eventData.nome) ?>;
-    // TIER_VALORES é um mapa { slug → { nome, valor } } montado server-side.
-    // Mantemos os scriptlets em uma única linha cada — multi-line scriptlet
-    // dentro de uma expressão printing já causou bug raro no parser do
-    // HtmlTemplate do Apps Script.
-    <? var _tierMap = {}; tiers.forEach(function(t){ _tierMap[t.slug] = { nome: t.nome, valor: t.valor }; }); ?>
-    const TIER_VALORES = <?= JSON.stringify(_tierMap) ?>;
-    const OBRIGADO_BASE = <?= JSON.stringify(siteUrl('obrigado')) ?>;
-
-    const VALID_TIERS = Object.keys(TIER_VALORES);
-
-    // ── DOM refs ──
-    const cotaInputs  = document.querySelectorAll('input[name="cota"]');
-    const tierCards   = document.querySelectorAll('.tier-banner-card');
-    const btnWhatsApp = document.getElementById('btnWhatsApp');
-    // Renomeado de `form` pra `formEl` — `form` colide com `window.form`
-    // exposto pelo browser quando há um <form name="form"> e com variáveis
-    // do sandbox do Apps Script, causando "Unexpected identifier 'form'"
-    // durante o parse do script.
-    const formEl      = document.getElementById('sponsorForm');
-    const btnSubmit   = document.getElementById('btnSubmit');
-    const msgBox      = document.getElementById('formMsg');
-    const hpWebsite   = document.getElementById('hp-website');
-
-    // ── Helpers ──
-    function getSelectedTier() {
-      const sel = document.querySelector('input[name="cota"]:checked');
-      return sel ? sel.value : '';
-    }
-
-    function buildObrigadoUrl(cota) {
-      // siteUrl('obrigado') nunca traz query, então o separador é sempre '?'.
-      // Concat ao invés de template literal — o iframe sandbox do Apps
-      // Script tem um bug raro onde backticks em <script> quebram o
-      // document.write da Maestro ("Failed to execute 'write' on 'Document':
-      // Unexpected identifier 'Erro'"). Concatenação é boring mas funciona.
-      return cota
-        ? OBRIGADO_BASE + '?cota=' + encodeURIComponent(cota)
-        : OBRIGADO_BASE;
-    }
-
-    function updateWhatsAppLink() {
-      const slug = getSelectedTier();
-      const tier = TIER_VALORES[slug];
-      const msg = tier
-        ? 'Olá! Tenho interesse na cota ' + tier.nome + ' da ' + EVENTO_NOME + '.'
-        : 'Olá! Tenho interesse em apoiar a ' + EVENTO_NOME + '.';
-      btnWhatsApp.href = 'https://wa.me/' + WHATSAPP_NUM + '?text=' + encodeURIComponent(msg);
-    }
-
-    /** Atualiza o atributo data-active dos cards visuais para combinar
-     *  com o radio que está marcado. Chamado em qualquer mudança de cota. */
-    function syncBannerCards() {
-      const slug = getSelectedTier();
-      tierCards.forEach((card) => {
-        if (card.dataset.slug === slug) card.setAttribute('data-active', '1');
-        else card.removeAttribute('data-active');
-      });
-    }
-
-    /** Marca o radio da cota correspondente, sincroniza os cards visuais
-     *  e atualiza o link do WhatsApp. */
-    function setTier(slug) {
-      if (!slug || !VALID_TIERS.includes(slug)) return;
-      const target = document.querySelector('input[name="cota"][value="' + slug + '"]');
-      if (target) target.checked = true;
-      syncBannerCards();
-      updateWhatsAppLink();
-    }
-
-    function showMsg(kind, text) {
-      // Concatenação simples (evita template literal aqui — o backtick
-      // nessa posição específica já causou "Unexpected identifier 'form'"
-      // no parser do iframe sandbox do Apps Script).
-      msgBox.className = 'form-msg show ' + kind;
-      msgBox.textContent = text;
-    }
-    function clearMsg() {
-      msgBox.className = 'form-msg';
-      msgBox.textContent = '';
-    }
-
-    function setSubmitting(isBusy) {
-      btnSubmit.disabled = isBusy;
-      if (isBusy) {
-        btnSubmit.setAttribute('aria-busy', 'true');
-        btnSubmit.textContent = 'Enviando…';
-      } else {
-        btnSubmit.removeAttribute('aria-busy');
-        btnSubmit.textContent = 'Enviar inscrição →';
-      }
-    }
-
-    // ── Wire-up ──
-    // Atualiza link do WhatsApp + cards visuais sempre que o usuário
-    // mudar a cota via radio. Os radios nativos cuidam do estado (checked).
-    cotaInputs.forEach((input) => {
-      input.addEventListener('change', () => {
-        syncBannerCards();
-        updateWhatsAppLink();
-      });
-    });
-
-    // Cards visuais: clicar marca o radio correspondente. É só atalho —
-    // a fonte de verdade continua sendo o radio button no formulário.
-    tierCards.forEach((card) => {
-      card.addEventListener('click', () => setTier(card.dataset.slug));
-    });
-
-    // Pre-seleciona APENAS se a cota veio na URL (?cota=ouro). Caso
-    // contrário, deixa nenhum radio marcado — o usuário escolhe ativamente.
-    // O submit valida a presença de cota e mostra erro se vazio.
-    if (INITIAL_COTA && VALID_TIERS.includes(INITIAL_COTA)) {
-      setTier(INITIAL_COTA);
-    } else {
-      // Garante que o link "Falar direto no WhatsApp" tem href válido
-      // mesmo sem cota selecionada.
-      updateWhatsAppLink();
-    }
-
-    // ── Submit ──
-    console.log('[inscricao] registrando handler de submit em', formEl);
-    formEl.addEventListener('submit', (ev) => {
-      console.log('[inscricao] submit interceptado — chamando registerSponsor');
-      ev.preventDefault();
-      clearMsg();
-
-      const cota = getSelectedTier();
-      if (!cota) { showMsg('error', 'Escolha uma cota (Bronze, Prata ou Ouro).'); return; }
-
-      const payload = {
-        cota:      cota,
-        nome:      document.getElementById('nome').value.trim(),
-        empresa:   document.getElementById('empresa').value.trim(),
-        whatsapp:  document.getElementById('whatsapp').value.trim(),
-        instagram: document.getElementById('instagram').value.trim(),
-        endereco:  document.getElementById('endereco').value.trim(),
-        mensagem:  document.getElementById('mensagem').value.trim(),
-        // Honeypot: deve sempre vir vazio. Preenchido ⇒ bot.
-        website:   hpWebsite ? hpWebsite.value : ''
-      };
-
-      if (!payload.nome)     { showMsg('error', 'Informe seu nome.'); return; }
-      if (!payload.whatsapp) { showMsg('error', 'Informe um WhatsApp para contato.'); return; }
-
-      setSubmitting(true);
-      showMsg('info', 'Enviando sua inscrição, um momento…');
-
-      console.log('[inscricao] payload pronto, enviando ao Apps Script:', payload);
-      google.script.run
-        .withSuccessHandler((res) => {
-          console.log('[inscricao] resposta do server:', res);
-          if (res && res.ok) {
-            // Redireciona pra tela de obrigado no domínio custom via
-            // postMessage — pede pro shell (top frame) navegar.
-            // window.top.location.href é interceptado pelo sandbox do
-            // Apps Script e termina em tela em branco.
-            const dest = (res && res.redirect) ? res.redirect : buildObrigadoUrl(cota);
-            try {
-              window.top.postMessage({ type: 'navigate-top', url: dest }, '*');
-            } catch (e) {
-              // Fallback caso postMessage falhe (improvável)
-              window.location.href = dest;
-            }
-          } else {
-            setSubmitting(false);
-            showMsg('error', (res && res.error) || 'Não foi possível enviar. Tente novamente ou use o WhatsApp.');
-          }
-        })
-        .withFailureHandler((err) => {
-          console.error('[inscricao] failure handler:', err);
-          setSubmitting(false);
-          const errMsg = err && err.message ? err.message : String(err);
-          showMsg('error', 'Erro no envio: ' + errMsg + '. Use o WhatsApp se preferir.');
-        })
-        .registerSponsor(payload);
-    });
-  </script>
 
 </body>
 </html>
