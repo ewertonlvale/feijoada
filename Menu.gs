@@ -64,7 +64,7 @@ function setupMenuSheet() {
     sheet.appendRow(MENU_HEADERS);
     sheet.setFrozenRows(1);
     const header = sheet.getRange(1, 1, 1, MENU_HEADERS.length);
-    header.setFontWeight('bold').setBackground('#8B2E2E').setFontColor('#FFF8EA');
+    header.setFontWeight('bold').setBackground('#E76A1F').setFontColor('#FFF6E9');
 
     // Linhas-exemplo — admin sobrescreve com valores reais.
     // Os preços ficam em branco de propósito ("a definir" no site).

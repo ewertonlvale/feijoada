@@ -1,6 +1,6 @@
 /**
  * ImportPDF.gs — Importa para a aba "patrocinadores" os 14 apoiadores
- * extraídos do PDF "Patrocinios Feijoada ECC".
+ * extraídos do PDF "Patrocinios Feijoada EJC".
  *
  * COMO USAR (uma vez só):
  *   1. Abra o editor do Apps Script

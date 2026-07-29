@@ -1,5 +1,5 @@
 /**
- * Config.gs — Configurações do mini-site Feijoada das Famílias 2026
+ * Config.gs — Configurações do mini-site Feijotacê 2026
  *
  * Edite SOMENTE este arquivo para personalizar a campanha.
  * Tudo o que pode mudar entre edições do evento está aqui.
@@ -42,9 +42,15 @@ const CONFIG = {
   CUSTOM_BASE_URL: 'https://feijoada-familias.pnscaparecida.com',
 
   // ───────── CONTATO ─────────
-  // WhatsApp da equipe responsável pela captação (sem +, sem espaços).
+  // WhatsApp principal da equipe responsável pela captação (sem +, sem espaços).
   // Formato: 55 + DDD + número. Ex.: 5586999999999
-  WHATSAPP: '5586988521231',
+  WHATSAPP: '5586995457246',
+
+  // Contatos exibidos na seção "Seja um patrocinador" (botões do WhatsApp).
+  CONTATOS: [
+    { nome: 'Gabhy Ramos',    numero: '(86) 99545-7246', whatsapp: '5586995457246' },
+    { nome: 'Pedro Henrique', numero: '(86) 99848-9064', whatsapp: '5586998489064' }
+  ],
 
   // Email para receber notificação a cada novo patrocinador (opcional).
   // Deixe '' (string vazia) para desativar.
@@ -58,34 +64,31 @@ const CONFIG = {
   // Se for trocar de host, basta editar a BASE_URL aqui.
   IMAGES: {
     BASE_URL: 'https://feijoada-familias.pnscaparecida.com/images',
-    PANELA:   'panela-feijoada.png',
     SERTAO:   'sertao-forro.png',
-    LOGO:     'logo-paroquia.png',
-    DANCA:    'dancando-feijoes.png'
+    LOGO:     'logo-paroquia.png'
   },
 
   // ───────── EVENTO ─────────
   EVENTO: {
-    nome:         'Feijoada das Famílias',
-    subtitulo:    'Forró com Feijão',
-    data_iso:     '2026-05-17',
-    data_label:   '17 de Maio · 2026',
-    hora_label:   'a partir das 11h',
+    nome:         'Feijotacê',
+    subtitulo:    'O Puro Suco da Alegria',
+    organizador:  'EJC',
+    data_iso:     '2026-08-02',
+    data_label:   '02 de Agosto · 2026',
+    hora_label:   'a partir das 12h',
     local_curto:  'Quadra Renascença I',
-    local_longo:  'Quadra de Esportes do Renascença I',
+    local_longo:  'Quadra de Esportes do Renascença I · Zona Sudeste',
     cidade:       'Teresina · PI',
     bairro:       'Renascença',
     paroquia:     'Paróquia Nossa Senhora da Conceição Aparecida',
-    hashtag:      '#FeijoadaDasFamilias',
+    hashtag:      '#Feijotacê',
 
     // Título visual do hero na landing. É montado como:
-    //   <hero_parte_1> & <hero_parte_2>
-    //   —<hero_tagline>—
-    // Mantido como campos separados pra evitar o hack
-    // `nome.split(' das ')[0]` (frágil quando o nome do evento muda).
-    hero_parte_1: 'Feijoada',
-    hero_parte_2: 'Forró',
-    hero_tagline: '— das Famílias —'
+    //   <hero_parte_1> <hero_parte_2>
+    //   <hero_tagline>
+    hero_parte_1: 'Feijotacê',
+    hero_parte_2: '',
+    hero_tagline: '— O Puro Suco da Alegria —'
   },
 
   // ───────── ATRAÇÕES MUSICAIS ─────────
@@ -106,8 +109,8 @@ const CONFIG = {
   // Deixe `[]` (array vazio) se não houver atrações — a seção some
   // automaticamente.
 ATRACOES: [
-  { nome: 'Marquinhos do Pará', poster: 'marquinhos_para.png' },
-  { nome: 'DJ Titio',           poster: 'dj_titio.png'         }
+  { nome: 'DJ Titio',       poster: 'dj_titio.png' },
+  { nome: 'Grupo Samblack'                          }
 ],
 
   // ───────── COTAS DE PATROCÍNIO ─────────
@@ -117,24 +120,24 @@ ATRACOES: [
     {
       slug: 'bronze',
       nome: 'Bronze',
-      valor: 100,
+      valor: 75,
       emoji: '🥉',
       destaque: false,
       beneficios: [
-        { texto: 'Exposição de <strong>banner</strong> no evento', highlight: false },
-        { texto: '<strong>Testemunhal</strong> durante o evento', highlight: false }
+        { texto: '<strong>Logo no painel de patrocínio:</strong> exposição da logo no painel de patrocinadores no local do evento', highlight: false },
+        { texto: '<strong>Divulgação durante o evento:</strong> anúncios e menções da marca em momentos estratégicos do evento', highlight: false }
       ]
     },
     {
       slug: 'prata',
       nome: 'Prata',
-      valor: 150,
+      valor: 125,
       emoji: '🥈',
       destaque: false,
       beneficios: [
-        { texto: 'Divulgação nas <strong>redes sociais</strong>', highlight: true },
-        { texto: 'Exposição de <strong>banner</strong> no evento', highlight: false },
-        { texto: '<strong>Testemunhal</strong> durante o evento', highlight: false }
+        { texto: '<strong>Divulgação nas redes sociais:</strong> postagens promocionais destacando a marca até a data do evento', highlight: true },
+        { texto: '<strong>Divulgação durante o evento:</strong> anúncios e menções da marca em momentos estratégicos do evento', highlight: false },
+        { texto: '<strong>Logo no painel de patrocínio:</strong> exposição da logo no painel de patrocinadores no local do evento', highlight: false }
       ]
     },
     {
@@ -145,10 +148,10 @@ ATRACOES: [
       destaque: true,
       destaque_label: 'TOP',
       beneficios: [
-        { texto: 'Divulgação nas <strong>redes sociais</strong>', highlight: false },
-        { texto: 'Exposição de <strong>banner</strong> no evento', highlight: false },
-        { texto: '<strong>Testemunhal</strong> durante o evento', highlight: false },
-        { texto: '<strong>Logo em materiais impressos</strong>', highlight: true }
+        { texto: '<strong>Divulgação nas redes sociais:</strong> postagens promocionais destacando a marca até a data do evento', highlight: false },
+        { texto: '<strong>Divulgação durante o evento:</strong> anúncios e menções da marca em momentos estratégicos do evento', highlight: false },
+        { texto: '<strong>Logo no painel de patrocínio:</strong> exposição destacada no painel de patrocinadores no local do evento', highlight: false },
+        { texto: '<strong>Logo nos impressos do evento:</strong> inclusão da logo em todos os materiais impressos distribuídos aos participantes', highlight: true }
       ]
     }
   ],

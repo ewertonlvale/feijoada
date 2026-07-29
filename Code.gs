@@ -1,5 +1,5 @@
 /**
- * Code.gs — Entrypoint do Web App Feijoada das Famílias 2026
+ * Code.gs — Entrypoint do Web App Feijotacê 2026
  *
  * Router via ?page=<rota>:
  *   - patrocinadores (default) → landing com as cotas e patrocinadores
@@ -41,14 +41,10 @@ function doGet(e) {
     // <source srcset> dentro de <picture>). Browsers que suportam WebP
     // baixam o WebP (~10× menor); fallback transparente nos demais.
     t.img = {
-      panela:     _imageUrl_('PANELA'),
-      panelaWebp: _toWebp_(_imageUrl_('PANELA')),
       sertao:     _imageUrl_('SERTAO'),
       sertaoWebp: _toWebp_(_imageUrl_('SERTAO')),
       logo:       _imageUrl_('LOGO'),
-      logoWebp:   _toWebp_(_imageUrl_('LOGO')),
-      danca:      _imageUrl_('DANCA'),
-      dancaWebp:  _toWebp_(_imageUrl_('DANCA'))
+      logoWebp:   _toWebp_(_imageUrl_('LOGO'))
     };
 
     // Cardápio renderizado server-side — só pago a leitura da planilha
@@ -111,20 +107,20 @@ function _renderErrorPage_(err) {
   const html =
     '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">' +
     '<meta name="viewport" content="width=device-width, initial-scale=1">' +
-    '<title>Erro — Feijoada das Famílias</title>' +
+    '<title>Erro — Feijotacê</title>' +
     '<style>' +
     'body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;' +
-    'background:#F5E6D3;color:#5A1616;margin:0;padding:2rem 1.2rem;' +
+    'background:#FBEFDD;color:#A5430D;margin:0;padding:2rem 1.2rem;' +
     'display:flex;align-items:center;justify-content:center;min-height:100vh;}' +
-    '.box{max-width:720px;background:#FFF8EA;border:2px dashed #E8B84E;' +
+    '.box{max-width:720px;background:#FFF6E9;border:2px dashed #F4A623;' +
     'border-radius:14px;padding:1.6rem 1.5rem;line-height:1.55;}' +
-    'h1{font-size:1.4rem;color:#8B2E2E;margin-bottom:0.6rem;}' +
+    'h1{font-size:1.4rem;color:#E76A1F;margin-bottom:0.6rem;}' +
     'p{margin-bottom:0.8rem;}' +
     '.kv{margin:0.6rem 0;}' +
     '.kv strong{display:inline-block;min-width:70px;}' +
-    'code{background:rgba(91,22,22,0.08);padding:0.15rem 0.4rem;' +
+    'code{background:rgba(46, 74, 130,0.08);padding:0.15rem 0.4rem;' +
     'border-radius:4px;font-size:0.88rem;}' +
-    'pre{background:rgba(91,22,22,0.06);padding:0.8rem;' +
+    'pre{background:rgba(46, 74, 130,0.06);padding:0.8rem;' +
     'border-radius:6px;font-size:0.78rem;overflow:auto;' +
     'white-space:pre-wrap;word-break:break-word;max-height:260px;}' +
     '</style></head><body><div class="box">' +
@@ -137,7 +133,7 @@ function _renderErrorPage_(err) {
     '<p>Se o problema continuar, nos chame pelo WhatsApp pela paróquia.</p>' +
     '</div></body></html>';
   return HtmlService.createHtmlOutput(html)
-    .setTitle('Erro — Feijoada das Famílias')
+    .setTitle('Erro — Feijotacê')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
@@ -177,10 +173,8 @@ function diagnose() {
     t.tiers       = CONFIG.TIERS;
     t.currentPage = 'patrocinadores';
     t.img = {
-      panela: _imageUrl_('PANELA'),
       sertao: _imageUrl_('SERTAO'),
-      logo:   _imageUrl_('LOGO'),
-      danca:  _imageUrl_('DANCA')
+      logo:   _imageUrl_('LOGO')
     };
     const html = t.evaluate().getContent();
     return 'evaluate ok, ' + html.length + ' chars';

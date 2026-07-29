@@ -6,12 +6,12 @@
  */
 
 :root {
-  --red:         #8B2E2E;
-  --red-deep:    #5A1616;
-  --yellow:      #E8B84E;
-  --yellow-soft: #F4D06F;
-  --beige:       #F5E6D3;
-  --cream:       #FFF8EA;
+  --red:         #E76A1F;
+  --red-deep:    #A5430D;
+  --yellow:      #F4A623;
+  --yellow-soft: #F9C65A;
+  --beige:       #FBEFDD;
+  --cream:       #FFF6E9;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -61,8 +61,8 @@ html, body {
   justify-content: center;
   gap: 1.2rem;
   background:
-    radial-gradient(circle at 20% 30%, rgba(232, 184, 78, 0.25) 0%, transparent 45%),
-    radial-gradient(circle at 80% 80%, rgba(91, 22, 22, 0.30) 0%, transparent 45%),
+    radial-gradient(circle at 20% 30%, rgba(244, 166, 35, 0.25) 0%, transparent 45%),
+    radial-gradient(circle at 80% 80%, rgba(46, 74, 130, 0.30) 0%, transparent 45%),
     linear-gradient(135deg, var(--red) 0%, var(--red-deep) 100%);
   color: var(--cream);
   text-align: center;
@@ -146,7 +146,7 @@ html, body {
 }
 #error-box code {
   display: inline-block;
-  background: rgba(91, 22, 22, 0.08);
+  background: rgba(46, 74, 130, 0.08);
   padding: 0.1rem 0.4rem;
   border-radius: 4px;
   font-size: 0.85rem;

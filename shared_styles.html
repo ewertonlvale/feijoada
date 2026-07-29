@@ -15,25 +15,29 @@
 -->
 <style>
   :root {
-    /* ──────────── Paleta feijoada ──────────── */
-    --red:          #8B2E2E;
-    --red-dark:     #6B1F1F;
-    --red-deep:     #5A1616;
-    --red-light:    #A8413B;
-    --brown:        #6B3E2E;
-    --brown-light:  #8B5E3E;
-    --brown-soft:   #A67C5B;
-    --beige:        #F5E6D3;
-    --beige-light:  #FBF3E5;
-    --beige-dark:   #E8D4B8;
-    --cream:        #FFF8EA;
-    --yellow:       #E8B84E;
-    --yellow-dark:  #C89938;
-    --yellow-soft:  #F4D06F;
-    --green-leaf:   #4C6A3A;
-    --green-dark:   #3D5530;
-    --text-dark:    #2B1A12;
-    --text-mid:     #5C4A3E;
+    /* ──────────── Paleta Feijotacê — laranja · azul-marinho · dourado ────────────
+       Nomes históricos mantidos p/ compatibilidade:
+         --red*    = laranja (cor principal / hero)
+         --brown*  = azul-marinho (seções secundárias)
+         --yellow* = dourado (destaques) */
+    --red:          #E76A1F;
+    --red-dark:     #C85412;
+    --red-deep:     #A5430D;
+    --red-light:    #F0854A;
+    --brown:        #2E4A82;
+    --brown-light:  #3A5C9E;
+    --brown-soft:   #5B79B0;
+    --beige:        #FBEFDD;
+    --beige-light:  #FEF7EC;
+    --beige-dark:   #F1DFC4;
+    --cream:        #FFF6E9;
+    --yellow:       #F4A623;
+    --yellow-dark:  #D2860F;
+    --yellow-soft:  #F9C65A;
+    --green-leaf:   #2E4A82;
+    --green-dark:   #1B2C52;
+    --text-dark:    #241A10;
+    --text-mid:     #574636;
     --text-light:   #8C7A6E;
     --whatsapp:     #25D366;
 
@@ -74,9 +78,9 @@
     --ease-out: cubic-bezier(0.2, 0, 0, 1);
 
     /* ──────────── Sombras ──────────── */
-    --shadow-soft:  0 4px 18px rgba(91, 31, 31, 0.10);
-    --shadow-hover: 0 10px 36px rgba(91, 31, 31, 0.18);
-    --shadow-card:  0 6px 22px rgba(107, 62, 46, 0.14);
+    --shadow-soft:  0 4px 18px rgba(46, 74, 130, 0.12);
+    --shadow-hover: 0 10px 36px rgba(46, 74, 130, 0.20);
+    --shadow-card:  0 6px 22px rgba(27, 44, 82, 0.16);
 
     /* ──────────── Tipografia ──────────── */
     --font-body:    'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -97,8 +101,8 @@
   html, body {
     font-family: var(--font-body);
     background:
-      radial-gradient(circle at 10% 0%,  rgba(232, 184, 78, 0.10) 0%, transparent 35%),
-      radial-gradient(circle at 90% 10%, rgba(139, 46, 46, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 10% 0%,  rgba(244, 166, 35, 0.12) 0%, transparent 35%),
+      radial-gradient(circle at 90% 10%, rgba(46, 74, 130, 0.08) 0%, transparent 40%),
       var(--beige);
     color: var(--text-dark);
     min-height: 100vh;

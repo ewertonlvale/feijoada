@@ -1,13 +1,13 @@
 {
-  "name": "Feijoada das Famílias 2026",
-  "short_name": "Feijoada",
-  "description": "Patrocínio da Feijoada das Famílias 2026 — ECC da Paróquia N. S. Conceição Aparecida.",
+  "name": "Feijotacê 2026",
+  "short_name": "Feijotacê",
+  "description": "Patrocínio da Feijotacê 2026 — EJC da Paróquia N. S. Conceição Aparecida.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#F5E6D3",
-  "theme_color": "#8B2E2E",
+  "background_color": "#FBEFDD",
+  "theme_color": "#E76A1F",
   "lang": "pt-BR",
   "icons": [
     {

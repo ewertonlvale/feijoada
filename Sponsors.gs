@@ -63,7 +63,7 @@ function _getOrCreateSheet_() {
     sheet.appendRow(SHEET_HEADERS);
     sheet.setFrozenRows(1);
     const header = sheet.getRange(1, 1, 1, SHEET_HEADERS.length);
-    header.setFontWeight('bold').setBackground('#8B2E2E').setFontColor('#FFF8EA');
+    header.setFontWeight('bold').setBackground('#E76A1F').setFontColor('#FFF6E9');
   } else {
     // Migração automática: planilhas antigas (criadas antes dos campos
     // de contato existirem) ganham os cabeçalhos faltantes anexados à
@@ -77,7 +77,7 @@ function _getOrCreateSheet_() {
       const startCol = lastCol + 1;
       sheet.getRange(1, startCol, 1, missing.length).setValues([missing]);
       sheet.getRange(1, startCol, 1, missing.length)
-        .setFontWeight('bold').setBackground('#8B2E2E').setFontColor('#FFF8EA');
+        .setFontWeight('bold').setBackground('#E76A1F').setFontColor('#FFF6E9');
       console.info('Adicionei colunas que faltavam:', missing.join(', '));
     }
   }

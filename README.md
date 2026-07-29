@@ -1,8 +1,8 @@
-# Feijoada das Famílias 2026 — Patrocínio
+# Feijotacê 2026 — Patrocínio
 
-Mini-site para campanha de patrocínio da **Feijoada das Famílias — Forró com Feijão**, evento do ECC (Encontro de Casais com Cristo) da Paróquia Nossa Senhora da Conceição Aparecida (Teresina / PI — Renascença).
+Mini-site para campanha de patrocínio da **Feijotacê — O Puro Suco da Alegria**, evento do EJC (Encontro de Casais com Cristo) da Paróquia Nossa Senhora da Conceição Aparecida (Teresina / PI — Renascença).
 
-> 17 de Maio de 2026 · 11h · Quadra de Esportes do Renascença I
+> 02 de Agosto de 2026 · 11h · Quadra de Esportes do Renascença I
 
 ---
 
@@ -103,7 +103,7 @@ clasp login
 Dentro da pasta do repo:
 
 ```bash
-clasp create --type webapp --title "Feijoada das Famílias 2026"
+clasp create --type webapp --title "Feijotacê 2026"
 # clasp cria o .clasp.json com o scriptId — não commite esse arquivo (está no .gitignore)
 clasp push
 ```
@@ -150,7 +150,7 @@ clasp deploy   # cria nova versão, mantendo URL
 3. Preenche nome, empresa, WhatsApp, email, mensagem opcional e envia.
 4. `google.script.run.registerSponsor()` grava uma linha nova na planilha com `status=pendente`.
 5. O usuário é redirecionado para `/exec?page=obrigado` com as instruções.
-6. A equipe do ECC recebe notificação no email (se configurado em `Config.gs`) e faz contato pelo WhatsApp para combinar pagamento, envio do logo, etc.
+6. A equipe do EJC recebe notificação no email (se configurado em `Config.gs`) e faz contato pelo WhatsApp para combinar pagamento, envio do logo, etc.
 7. Quando o patrocínio é confirmado, a equipe muda manualmente `status` para `confirmado` na planilha, e esse patrocinador passa a aparecer na galeria pública em `?page=lista`.
 
 ---
@@ -187,6 +187,6 @@ Aba **`patrocinadores`** (criada automaticamente na primeira execução):
 ## Licença e créditos
 
 Projeto interno da **Paróquia Nossa Senhora da Conceição Aparecida** — Teresina / PI.
-Equipe ECC.
+Equipe EJC.
 
-`#FeijoadaDasFamilias` · `#ECC`
+`#Feijotacê` · `#EJC`
