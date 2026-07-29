@@ -122,8 +122,7 @@ const CONFIG = {
   // Deixe `[]` (array vazio) se não houver atrações — a seção some
   // automaticamente.
 ATRACOES: [
-  { nome: 'DJ Titio',       poster: 'dj_titio.png'       },
-  { nome: 'Grupo Samblack', poster: 'grupo_samblack.png' }
+  { nome: 'DJ Titio · Grupo Samblack', poster: 'atracao.jpg' }
 ],
 
   // ───────── COTAS DE PATROCÍNIO ─────────
