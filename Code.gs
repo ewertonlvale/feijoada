@@ -2,56 +2,190 @@
  * Code.gs — Entrypoint do Web App Feijoada das Famílias 2026
  *
  * Router via ?page=<rota>:
- *   - patrocinadores (default) → landing com as cotas
+ *   - patrocinadores (default) → landing com as cotas e patrocinadores
  *   - inscricao[&cota=bronze|prata|ouro] → formulário de adesão
  *   - obrigado → página de confirmação pós-envio
- *   - lista   → galeria pública de patrocinadores confirmados
+ *   - lista    → galeria pública completa de patrocinadores
+ *   - cardapio → cardápio do evento (lê aba "cardapio" da planilha)
  */
 
 const ROUTES = {
   patrocinadores: 'patrocinadores',
   inscricao:      'inscricao',
   obrigado:       'obrigado',
-  lista:          'lista'
+  lista:          'lista',
+  cardapio:       'cardapio'
 };
 
 function doGet(e) {
-  const params = (e && e.parameter) ? e.parameter : {};
-  const pageKey = String(params.page || 'patrocinadores').toLowerCase();
-  const templateName = ROUTES[pageKey] || 'patrocinadores';
+  try {
+    const params = (e && e.parameter) ? e.parameter : {};
+    const rawPage = String(params.page || 'patrocinadores').toLowerCase();
+    const pageKey = ROUTES[rawPage] ? rawPage : 'patrocinadores';
 
-  const t = HtmlService.createTemplateFromFile(templateName);
+    const t = HtmlService.createTemplateFromFile(pageKey);
 
-  // Dados disponíveis em todos os templates
-  t.scriptUrl   = ScriptApp.getService().getUrl() || '';
-  t.params      = params;
-  t.config      = CONFIG;
-  t.eventData   = CONFIG.EVENTO;
-  t.tiers       = CONFIG.TIERS;
-  t.currentPage = pageKey in ROUTES ? pageKey : 'patrocinadores';
+    // Dados disponíveis em todos os templates.
+    // Obs.: funções globais (siteUrl, include) são acessíveis diretamente
+    // dos scriptlets no runtime V8 — não é preciso atribuí-las em `t`.
+    t.params      = params;
+    t.config      = CONFIG;
+    t.eventData   = CONFIG.EVENTO;
+    t.tiers       = CONFIG.TIERS;
+    t.atracoes    = _resolveAtracoes_(CONFIG.ATRACOES, CONFIG.IMAGES);
+    t.currentPage = pageKey;
 
-  // Função helper que os templates usam pra gerar links pro custom domain.
-  // Binda com bind() pra garantir o `this` correto no scope do template.
-  t.siteUrl = siteUrl;
+    // URLs absolutas de cada imagem.
+    // Cada chave expõe o PNG (compatível com qualquer browser, no <img src>)
+    // e o WebP correspondente (mesmo path, extensão trocada — usado no
+    // <source srcset> dentro de <picture>). Browsers que suportam WebP
+    // baixam o WebP (~10× menor); fallback transparente nos demais.
+    t.img = {
+      panela:     _imageUrl_('PANELA'),
+      panelaWebp: _toWebp_(_imageUrl_('PANELA')),
+      sertao:     _imageUrl_('SERTAO'),
+      sertaoWebp: _toWebp_(_imageUrl_('SERTAO')),
+      logo:       _imageUrl_('LOGO'),
+      logoWebp:   _toWebp_(_imageUrl_('LOGO')),
+      danca:      _imageUrl_('DANCA'),
+      dancaWebp:  _toWebp_(_imageUrl_('DANCA'))
+    };
 
-  // URLs absolutas de cada imagem (já prontas para usar no src="...")
-  t.img = {
-    panela: _imageUrl_('PANELA'),
-    sertao: _imageUrl_('SERTAO'),
-    logo:   _imageUrl_('LOGO'),
-    danca:  _imageUrl_('DANCA')
+    // Cardápio renderizado server-side — só pago a leitura da planilha
+    // quando a rota é /cardapio. Outras rotas não precisam dos dados.
+    if (pageKey === 'cardapio') {
+      t.menu = listMenu();
+      // Carrega patrocinadores Ouro pra mostrar como banner no topo do
+      // cardápio (página mais acessada). Shuffle in-place pra ordem
+      // randômica em cada renderização — `listSponsors` cacheia os DADOS
+      // por 60s, mas o shuffle acontece depois do lookup, então cada
+      // request mistura de novo (mesmo dentro do TTL do cache).
+      var sp = listSponsors();
+      var ouro = (sp && sp.ok && sp.sponsors)
+        ? sp.sponsors.filter(function (s) { return s.cota === 'ouro'; })
+        : [];
+      // Fisher-Yates shuffle (algoritmo padrão, distribuição uniforme).
+      for (var i = ouro.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = ouro[i]; ouro[i] = ouro[j]; ouro[j] = tmp;
+      }
+      t.ouroSponsors = ouro;
+    }
+
+    const title = (pageKey === 'cardapio')
+      ? (CONFIG.EVENTO.nome + ' — Cardápio')
+      : (CONFIG.EVENTO.nome + ' — Patrocínio');
+
+    return t.evaluate()
+      .setTitle(title)
+      .setFaviconUrl('https://www.google.com/images/icons/product/script-48.png')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover');
+    // Obs.: HtmlOutput.addMetaTag() só aceita uma lista branca
+    // (viewport, description, author, keywords, generator, application-name).
+    // A meta "theme-color" vive no <head> do docs/index.html (GitHub Pages).
+  } catch (err) {
+    // Fallback visual — se algo falhar no evaluate() ou num scriptlet, o
+    // usuário recebe uma página legível em vez da stack trace crua do
+    // Apps Script. O erro completo vai para o Stackdriver via console.error.
+    console.error('doGet falhou:', err && err.stack ? err.stack : err);
+    return _renderErrorPage_(err);
+  }
+}
+
+/**
+ * Página de erro amigável — usada quando doGet() falha antes de conseguir
+ * renderizar a rota pedida. Mostra mensagem + stack pra diagnóstico.
+ */
+function _renderErrorPage_(err) {
+  const escapeHtml = function (s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
   };
+  const msg = escapeHtml((err && err.message) || err || 'Erro desconhecido.');
+  const stack = escapeHtml((err && err.stack) || '(sem stack)');
+  const name = escapeHtml((err && err.name) || 'Error');
 
-  const title = CONFIG.EVENTO.nome + ' — Patrocínio';
+  const html =
+    '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1">' +
+    '<title>Erro — Feijoada das Famílias</title>' +
+    '<style>' +
+    'body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;' +
+    'background:#F5E6D3;color:#5A1616;margin:0;padding:2rem 1.2rem;' +
+    'display:flex;align-items:center;justify-content:center;min-height:100vh;}' +
+    '.box{max-width:720px;background:#FFF8EA;border:2px dashed #E8B84E;' +
+    'border-radius:14px;padding:1.6rem 1.5rem;line-height:1.55;}' +
+    'h1{font-size:1.4rem;color:#8B2E2E;margin-bottom:0.6rem;}' +
+    'p{margin-bottom:0.8rem;}' +
+    '.kv{margin:0.6rem 0;}' +
+    '.kv strong{display:inline-block;min-width:70px;}' +
+    'code{background:rgba(91,22,22,0.08);padding:0.15rem 0.4rem;' +
+    'border-radius:4px;font-size:0.88rem;}' +
+    'pre{background:rgba(91,22,22,0.06);padding:0.8rem;' +
+    'border-radius:6px;font-size:0.78rem;overflow:auto;' +
+    'white-space:pre-wrap;word-break:break-word;max-height:260px;}' +
+    '</style></head><body><div class="box">' +
+    '<h1>Ops — não conseguimos carregar a página</h1>' +
+    '<p>Houve um erro interno ao montar a página de patrocínio.' +
+    ' A equipe já foi notificada no log.</p>' +
+    '<div class="kv"><strong>Tipo:</strong> <code>' + name + '</code></div>' +
+    '<div class="kv"><strong>Mensagem:</strong> <code>' + msg + '</code></div>' +
+    '<div class="kv"><strong>Stack:</strong></div><pre>' + stack + '</pre>' +
+    '<p>Se o problema continuar, nos chame pelo WhatsApp pela paróquia.</p>' +
+    '</div></body></html>';
+  return HtmlService.createHtmlOutput(html)
+    .setTitle('Erro — Feijoada das Famílias')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
 
-  return t.evaluate()
-    .setTitle(title)
-    .setFaviconUrl('https://www.google.com/images/icons/product/script-48.png')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover');
-  // Obs.: HtmlOutput.addMetaTag() só aceita uma lista branca
-  // (viewport, description, author, keywords, generator, application-name).
-  // A meta "theme-color" vive no <head> do docs/index.html (GitHub Pages).
+/**
+ * Diagnóstico server-side — rode isso do editor do Apps Script
+ * (Executar ▶) pra ver em qual etapa de doGet o null aparece.
+ * Retorna um objeto com check de cada dependência.
+ */
+function diagnose() {
+  const result = { steps: [] };
+  const step = function (name, fn) {
+    try {
+      const r = fn();
+      result.steps.push({ name: name, ok: true, value: r });
+    } catch (e) {
+      result.steps.push({ name: name, ok: false, error: String(e && e.message || e) });
+    }
+  };
+  step('CONFIG existe',        function () { return typeof CONFIG; });
+  step('CONFIG.EVENTO.nome',   function () { return CONFIG.EVENTO && CONFIG.EVENTO.nome; });
+  step('CONFIG.TIERS.length',  function () { return CONFIG.TIERS && CONFIG.TIERS.length; });
+  step('CONFIG.IMAGES',        function () { return typeof CONFIG.IMAGES; });
+  step('siteUrl é função',     function () { return typeof siteUrl; });
+  step('include é função',     function () { return typeof include; });
+  step('siteUrl("lista")',     function () { return siteUrl('lista'); });
+  step('_imageUrl_("LOGO")',   function () { return _imageUrl_('LOGO'); });
+  step('getTier("ouro")',      function () { return typeof getTier === 'function' ? !!getTier('ouro') : 'getTier não é função'; });
+  step('createTemplateFromFile("patrocinadores")', function () {
+    const t = HtmlService.createTemplateFromFile('patrocinadores');
+    return typeof t;
+  });
+  step('createTemplateFromFile + evaluate', function () {
+    const t = HtmlService.createTemplateFromFile('patrocinadores');
+    t.params      = {};
+    t.config      = CONFIG;
+    t.eventData   = CONFIG.EVENTO;
+    t.tiers       = CONFIG.TIERS;
+    t.currentPage = 'patrocinadores';
+    t.img = {
+      panela: _imageUrl_('PANELA'),
+      sertao: _imageUrl_('SERTAO'),
+      logo:   _imageUrl_('LOGO'),
+      danca:  _imageUrl_('DANCA')
+    };
+    const html = t.evaluate().getContent();
+    return 'evaluate ok, ' + html.length + ' chars';
+  });
+  return result;
 }
 
 /**
@@ -63,7 +197,12 @@ function doGet(e) {
  *   <?!= include('shared_styles') ?>
  *
  * Uso com contexto:
- *   <?!= include('shared_topbar', { siteUrl: siteUrl, currentPage: currentPage, img: img }) ?>
+ *   <?!= include('shared_topbar', { currentPage: currentPage, img: img }) ?>
+ *
+ * IMPORTANTE: NÃO passe funções (ex.: siteUrl) como valores do context.
+ * O HtmlTemplate do Apps Script V8 trava com "object null is not a function"
+ * ao ler propriedades do tipo function. Funções globais já são visíveis nos
+ * scriptlets do template incluído — chame direto `<?= siteUrl('...') ?>`.
  */
 function include(filename, context) {
   const t = HtmlService.createTemplateFromFile(filename);
@@ -71,24 +210,6 @@ function include(filename, context) {
     Object.keys(context).forEach(function (k) { t[k] = context[k]; });
   }
   return t.evaluate().getContent();
-}
-
-/**
- * Constrói uma URL para outra rota do próprio web app (Apps Script direto).
- * Uso raro — só quando precisamos mesmo do URL /exec (ex.: redirect server-side).
- * Para links públicos em templates, prefira siteUrl().
- */
-function urlFor(page, extraParams) {
-  const base = ScriptApp.getService().getUrl() || '';
-  const qp = ['page=' + encodeURIComponent(page)];
-  if (extraParams) {
-    for (const k in extraParams) {
-      if (Object.prototype.hasOwnProperty.call(extraParams, k)) {
-        qp.push(encodeURIComponent(k) + '=' + encodeURIComponent(extraParams[k]));
-      }
-    }
-  }
-  return base + '?' + qp.join('&');
 }
 
 /**
@@ -100,6 +221,7 @@ function urlFor(page, extraParams) {
  *   lista          → /lista.html
  *   inscricao      → /inscricao.html  (ex.: /inscricao.html?cota=ouro)
  *   obrigado       → /obrigado.html   (ex.: /obrigado.html?cota=ouro)
+ *   cardapio       → /cardapio.html
  *
  * Exemplo em template:
  *   <a href="<?= siteUrl('lista') ?>" target="_top">Patrocinadores</a>
@@ -111,8 +233,12 @@ function siteUrl(page, extraParams) {
     patrocinadores: '/',
     lista:          '/lista.html',
     inscricao:      '/inscricao.html',
-    obrigado:       '/obrigado.html'
+    obrigado:       '/obrigado.html',
+    cardapio:       '/cardapio.html'
   };
+  if (page && !paths[page]) {
+    console.warn('siteUrl: rota desconhecida:', page);
+  }
   const path = paths[page] || '/';
   let url = base + path;
 
@@ -128,6 +254,49 @@ function siteUrl(page, extraParams) {
     if (qp.length) url += '?' + qp.join('&');
   }
   return url;
+}
+
+/**
+ * Resolve `CONFIG.ATRACOES` em uma lista pronta pro template, com
+ * `poster_url` absoluto. Aceita tanto `'marquinhos.png'` (filename
+ * relativo a /images/atracoes/) quanto URL completa começando com http.
+ *
+ * Se `images.BASE_URL` não estiver configurada ou o `poster` for vazio,
+ * a entrada vai com `poster_url: ''` — o template trata exibindo só uma
+ * moldura cinza com o nome (degradação graciosa).
+ *
+ * @param {Array<{nome:string, poster:string}>} atracoes
+ * @param {object} images  Bloco CONFIG.IMAGES com BASE_URL.
+ * @return {Array<{nome:string, poster_url:string}>}
+ */
+function _resolveAtracoes_(atracoes, images) {
+  if (!atracoes || !atracoes.length) return [];
+  var base = String((images && images.BASE_URL) || '').replace(/\/+$/, '');
+  return atracoes.map(function (a) {
+    var nome = String(a && a.nome || '').trim();
+    var poster = String(a && a.poster || '').trim();
+    var url = '';
+    if (poster) {
+      if (/^https?:\/\//i.test(poster)) {
+        url = poster;
+      } else if (base) {
+        // Nome só do arquivo (defesa contra path traversal — pega só o
+        // último segmento se vier algo como 'subfolder/x.png').
+        var fname = poster.split(/[/\\]/).pop();
+        if (fname && fname.indexOf('..') === -1) {
+          url = base + '/atracoes/' + fname;
+        }
+      }
+    }
+    // poster_url_webp deriva trocando a extensão. Convenção: o admin sobe
+    // .png + .webp lado a lado em /images/atracoes/. Se não houver
+    // versão WebP, _toWebp_ retorna '' e o template não emite o <source>.
+    return {
+      nome: nome,
+      poster_url: url,
+      poster_url_webp: _toWebp_(url)
+    };
+  });
 }
 
 /**
@@ -150,8 +319,22 @@ function _imageUrl_(key) {
 }
 
 /**
+ * Troca a extensão final por `.webp`. Usado pra montar a URL do WebP a
+ * partir da URL do PNG configurada em CONFIG.IMAGES, sem precisar
+ * duplicar a chave no Config.
+ *
+ * Se a string não terminar com `.png`/`.jpg`/`.jpeg`, retorna vazio
+ * (assim o template detecta e não emite um `<source>` quebrado).
+ */
+function _toWebp_(url) {
+  if (!url) return '';
+  const m = String(url).match(/^(.+)\.(png|jpe?g)$/i);
+  return m ? (m[1] + '.webp') : '';
+}
+
+/**
  * Healthcheck simples. Útil para testar do editor do Apps Script
- * antes de publicar (Executar ▶ → ping).
+ * antes de publicar (Executar ▶ → ping). Não é rota do router.
  */
 function ping() {
   return {

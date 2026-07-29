@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Cardápio da Feijoada das Famílias 2026 — pratos, espetinhos, bebidas e doces.">
+  <?!= include('shared_styles') ?>
+
+  <title>Cardápio — <?= eventData.nome ?></title>
+
+  <style>
+    /* ── Hero compacto ── */
+    .menu-hero {
+      background:
+        radial-gradient(ellipse at 20% 20%, rgba(232, 184, 78, 0.22) 0%, transparent 55%),
+        linear-gradient(135deg, var(--red) 0%, var(--red-deep) 100%);
+      color: var(--cream);
+      padding: 2.4rem 1.5rem 2.6rem;
+      text-align: center;
+      border-bottom: 6px solid var(--yellow);
+    }
+    .menu-hero-badge {
+      display: inline-block;
+      background: rgba(232,184,78,0.18);
+      border: var(--border-md) solid var(--yellow);
+      border-radius: var(--radius-pill);
+      padding: 0.3rem 1rem;
+      font-size: 0.75rem;
+      color: var(--yellow-soft);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .menu-hero h1 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(2.4rem, 8vw, 3.6rem);
+      color: var(--cream);
+      letter-spacing: 0.04em;
+      margin: 0.7rem 0 0.2rem;
+      line-height: 1;
+    }
+    .menu-hero-sub {
+      font-family: var(--font-script);
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      color: var(--yellow-soft);
+    }
+
+    /* ── Layout principal ── */
+    .menu-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 1.4rem 1.2rem 2rem;
+    }
+
+    /* ── Cabeçalho de categoria ── */
+    .menu-cat-header {
+      display: flex; align-items: center; gap: 0.7rem;
+      margin: 1.6rem 0 0.8rem;
+    }
+    .menu-cat-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--red);
+      color: var(--yellow);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-soft);
+    }
+    .menu-cat-icon .icon { width: 18px; height: 18px; }
+    .menu-cat-title {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--red-dark);
+      margin: 0;
+    }
+    .menu-cat-rule {
+      flex: 1;
+      height: 1px;
+      background: var(--beige-dark);
+    }
+
+    /* ── Card destaque (Feijoada / prato principal) ── */
+    .menu-feature {
+      background: var(--cream);
+      border: var(--border-thick) solid var(--red);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.3rem;
+      position: relative;
+      box-shadow: var(--shadow-card);
+    }
+    .menu-feature .star {
+      position: absolute;
+      top: -10px; right: 16px;
+      background: var(--red);
+      color: var(--yellow);
+      padding: 0.2rem 0.8rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .menu-feature h3 {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--red-dark);
+      margin: 0.3rem 0 0.4rem;
+    }
+    .menu-feature p {
+      font-size: 0.95rem;
+      color: var(--text-mid);
+      line-height: 1.55;
+      margin: 0 0 0.9rem;
+    }
+    .menu-feature .price-row {
+      display: flex; justify-content: flex-end; align-items: baseline;
+      gap: 0.4rem;
+    }
+    .menu-feature .price {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--red);
+      line-height: 1;
+    }
+    .menu-feature .price.tbd {
+      font-family: var(--font-script);
+      font-size: 1.3rem;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    /* ── Itens compactos (linha) ── */
+    .menu-item {
+      background: var(--cream);
+      border: var(--border-thin) solid var(--beige-dark);
+      border-radius: var(--radius-sm);
+      padding: 0.7rem 1rem;
+      display: flex; align-items: center; gap: 0.8rem;
+      margin-bottom: 0.45rem;
+      transition: border-color var(--t-base) var(--ease-out);
+    }
+    .menu-item:hover { border-color: var(--brown-soft); }
+    .menu-item .nome {
+      flex: 1; min-width: 0;
+      font-weight: 600;
+      color: var(--text-dark);
+      font-size: 0.98rem;
+      line-height: 1.3;
+    }
+    .menu-item .desc {
+      display: block;
+      font-family: var(--font-script);
+      font-weight: 500;
+      color: var(--brown);
+      font-size: 0.92rem;
+      margin-top: 0.1rem;
+    }
+    .menu-item .preco {
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--red);
+      line-height: 1;
+      flex-shrink: 0;
+      letter-spacing: 0.02em;
+    }
+    .menu-item .preco.tbd {
+      font-family: var(--font-script);
+      font-size: 1rem;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    /* ── Estado vazio (categoria sem itens ou planilha vazia) ── */
+    .menu-empty {
+      background: var(--beige-light);
+      border: var(--border-thin) dashed var(--beige-dark);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      color: var(--text-mid);
+      font-family: var(--font-script);
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    /* ── Erro de leitura da planilha ── */
+    .menu-error {
+      max-width: 620px;
+      margin: 1.5rem auto;
+      background: var(--error-bg);
+      border: var(--border-thin) solid var(--error-border);
+      color: var(--error-text);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.2rem;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    /* ── Rodapé pequeno (preços ilustrativos / atualização) ── */
+    .menu-foot-note {
+      text-align: center;
+      margin-top: 1.4rem;
+      color: var(--text-light);
+      font-family: var(--font-script);
+      font-size: 1rem;
+    }
+
+    /* ── Banner de patrocinadores Ouro acima do cardápio ──
+       Versão compacta dos cards Ouro da home — logo média (90×90) + nome,
+       sem botões de ação (mantém o foco no cardápio). Carrossel horizontal
+       scroll-snap em qualquer viewport (mais flexível que grid responsivo
+       quando o número de patrocinadores varia). Renderizado server-side
+       em ordem aleatória a cada request (ver Code.js doGet/cardapio). */
+    .ouro-banner {
+      max-width: 900px;
+      margin: 1.2rem auto 0;
+      padding: 0 1rem;
+    }
+    .ouro-banner-head {
+      display: flex; align-items: center; gap: 0.5rem;
+      margin-bottom: 0.7rem;
+      padding: 0 0.2rem;
+    }
+    .ouro-banner-medal {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--ouro) 0%, var(--ouro-dark) 100%);
+      color: var(--cream);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+    .ouro-banner-title {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--red-dark);
+      margin: 0;
+      letter-spacing: 0.02em;
+    }
+    .ouro-banner-sub {
+      font-family: var(--font-script);
+      color: var(--brown);
+      font-size: 1rem;
+      margin-left: 0.3rem;
+    }
+    .ouro-banner-scroll-wrap {
+      position: relative;
+    }
+    /* Fade na borda direita pra hint de "tem mais, role pro lado". */
+    .ouro-banner-scroll-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0; width: 28px;
+      background: linear-gradient(90deg, transparent, var(--beige));
+      pointer-events: none;
+    }
+    .ouro-banner-scroll {
+      display: flex;
+      gap: 0.6rem;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      padding: 0.3rem 0.2rem 0.6rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--ouro-dark) transparent;
+      -webkit-overflow-scrolling: touch;
+    }
+    .ouro-banner-scroll::-webkit-scrollbar { height: 4px; }
+    .ouro-banner-scroll::-webkit-scrollbar-thumb { background: var(--ouro-dark); border-radius: 999px; }
+    .ouro-banner-scroll::-webkit-scrollbar-track { background: rgba(107,62,46,0.08); border-radius: 999px; }
+
+    .ouro-banner-card {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      width: 130px;
+      background: var(--cream);
+      border: var(--border-md) solid var(--ouro);
+      border-radius: var(--radius-md);
+      padding: 0.6rem 0.4rem;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+      text-decoration: none;
+      color: inherit;
+      transition: transform var(--t-base) var(--ease-out),
+                  box-shadow var(--t-base) var(--ease-out);
+    }
+    @media (hover: hover) {
+      .ouro-banner-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(166, 124, 18, 0.25);
+      }
+    }
+    .ouro-banner-logo {
+      width: 90px; height: 90px;
+      border-radius: var(--radius-sm);
+      background: var(--beige);
+      border: var(--border-thin) solid var(--beige-dark);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      margin-bottom: 0.45rem;
+    }
+    .ouro-banner-logo img {
+      max-width: 88%; max-height: 88%;
+      object-fit: contain;
+    }
+    .ouro-banner-logo .initials {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--brown);
+    }
+    .ouro-banner-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      line-height: 1.15;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+
+  <?!= include('shared_icons') ?>
+  <?!= include('shared_topbar', { currentPage: currentPage, img: img }) ?>
+
+  <!-- ── HERO ── -->
+  <section class="menu-hero">
+    <span class="menu-hero-badge"><?= eventData.data_label ?></span>
+    <h1>Cardápio</h1>
+    <div class="menu-hero-sub">— o que vai ter na quadra —</div>
+  </section>
+
+  <!-- ── Banner de patrocinadores Ouro ──
+       Lista vinda de t.ouroSponsors em Code.js doGet (já filtrada e
+       embaralhada server-side). Cada card é uma <a> apontando pra
+       Instagram do patrocinador (ou WhatsApp se não tiver IG, ou
+       endereço como último recurso). Esconde a seção inteira se não
+       houver Ouro confirmado. -->
+  <? if (ouroSponsors && ouroSponsors.length) { ?>
+    <section class="ouro-banner" aria-labelledby="ouroBannerTitle">
+      <div class="ouro-banner-head">
+        <div class="ouro-banner-medal" aria-hidden="true">Au</div>
+        <h2 id="ouroBannerTitle" class="ouro-banner-title">Apoio Ouro</h2>
+        <span class="ouro-banner-sub">— quem fez essa feijoada acontecer</span>
+      </div>
+      <div class="ouro-banner-scroll-wrap">
+        <div class="ouro-banner-scroll" role="list">
+          <? ouroSponsors.forEach(function(s) {
+               var displayName = s.empresa || s.nome || 'Patrocinador';
+               // Prioriza Instagram > WhatsApp > Maps como destino do clique.
+               // Se o patrocinador não tiver nenhum link, o card vira só
+               // visual (sem ação ao clicar).
+               var href = s.instagram_url || s.whatsapp_url || s.maps_url || '';
+               // Iniciais como fallback se a logo falhar / não existir.
+               var parts = String(displayName).trim().split(/\s+/);
+               var initials = (parts[0] ? parts[0][0] : '?').toUpperCase();
+               if (parts.length > 1 && parts[1][0]) initials += parts[1][0].toUpperCase();
+               // Resolve URL do WebP a partir da PNG/JPG (mesma convenção
+               // dos outros lugares: admin sobe .png + .webp lado a lado).
+               var webpMatch = String(s.logo_url || '').match(/^(.+)\.(png|jpe?g)$/i);
+               var webpUrl = webpMatch ? (webpMatch[1] + '.webp') : '';
+          ?>
+            <? if (href) { ?>
+              <a class="ouro-banner-card" role="listitem"
+                 href="<?= href ?>" target="_blank" rel="noopener"
+                 aria-label="<?= displayName ?>">
+                <div class="ouro-banner-logo">
+                  <? if (s.logo_url) { ?>
+                    <picture>
+                      <? if (webpUrl) { ?>
+                        <source srcset="<?= webpUrl ?>" type="image/webp">
+                      <? } ?>
+                      <img src="<?= s.logo_url ?>" alt="<?= displayName ?>" loading="lazy">
+                    </picture>
+                  <? } else { ?>
+                    <span class="initials"><?= initials ?></span>
+                  <? } ?>
+                </div>
+                <span class="ouro-banner-name"><?= displayName ?></span>
+              </a>
+            <? } else { ?>
+              <div class="ouro-banner-card" role="listitem">
+                <div class="ouro-banner-logo">
+                  <? if (s.logo_url) { ?>
+                    <picture>
+                      <? if (webpUrl) { ?>
+                        <source srcset="<?= webpUrl ?>" type="image/webp">
+                      <? } ?>
+                      <img src="<?= s.logo_url ?>" alt="<?= displayName ?>" loading="lazy">
+                    </picture>
+                  <? } else { ?>
+                    <span class="initials"><?= initials ?></span>
+                  <? } ?>
+                </div>
+                <span class="ouro-banner-name"><?= displayName ?></span>
+              </div>
+            <? } ?>
+          <? }); ?>
+        </div>
+      </div>
+    </section>
+  <? } ?>
+
+  <main class="menu-wrap">
+
+    <? if (menu && menu.ok === false) { ?>
+      <div class="menu-error">
+        Não foi possível carregar o cardápio agora. <?= menu.error || '' ?>
+      </div>
+    <? } ?>
+
+    <? (menu && menu.groups || []).forEach(function(group) { ?>
+      <section>
+        <div class="menu-cat-header">
+          <div class="menu-cat-icon" aria-hidden="true">
+            <? if (group.categoria === 'Prato principal') { ?>
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18l-1 8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2l-1-8z"/><path d="M5 11V9a7 7 0 0 1 14 0v2"/></svg>
+            <? } else if (group.categoria === 'Espetinho') { ?>
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="3"/><circle cx="7" cy="17" r="2"/><circle cx="11" cy="13" r="2"/><circle cx="15" cy="9" r="2"/></svg>
+            <? } else if (group.categoria === 'Crepes') { ?>
+              <!-- Crepe dobrado em triângulo (pointing up) com linha
+                   horizontal e onda interna sugerindo recheio entre as
+                   camadas. Mantém o estilo line-art dos outros ícones. -->
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19 L12 5 L20 19 Z"/><path d="M9 15 L15 15"/><path d="M10 12 Q12 10.5 14 12"/></svg>
+            <? } else if (group.categoria === 'Bebidas') { ?>
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h14l-2 18H7L5 3z"/><line x1="6" y1="9" x2="18" y2="9"/></svg>
+            <? } else { ?>
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7l1-4z"/><path d="M5 6h14l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6z"/></svg>
+            <? } ?>
+          </div>
+          <h2 class="menu-cat-title"><?= group.categoria ?></h2>
+          <div class="menu-cat-rule"></div>
+        </div>
+
+        <? if (!group.items.length) { ?>
+          <div class="menu-empty">— em breve —</div>
+        <? } else if (group.categoria === 'Prato principal') {
+             // Prato principal vira card destacado (a Feijoada).
+             // Se houver mais de um, todos viram cards destacados em sequência.
+             group.items.forEach(function(item) { ?>
+            <article class="menu-feature">
+              <div class="star">Estrela do dia</div>
+              <h3><?= item.nome ?></h3>
+              <? if (item.descricao) { ?>
+                <p><?= item.descricao ?></p>
+              <? } ?>
+              <div class="price-row">
+                <? if (item.preco !== null) { ?>
+                  <span class="price"><?= item.preco_label ?></span>
+                <? } else { ?>
+                  <span class="price tbd"><?= item.preco_label ?></span>
+                <? } ?>
+              </div>
+            </article>
+        <?  });
+           } else {
+             // Demais categorias: linhas compactas
+             group.items.forEach(function(item) { ?>
+            <div class="menu-item">
+              <div class="nome">
+                <?= item.nome ?>
+                <? if (item.descricao) { ?>
+                  <span class="desc"><?= item.descricao ?></span>
+                <? } ?>
+              </div>
+              <span class="preco <?= item.preco === null ? 'tbd' : '' ?>"><?= item.preco_label ?></span>
+            </div>
+        <?  });
+           } ?>
+      </section>
+    <? }); ?>
+
+    <p class="menu-foot-note">— pode haver pequenas variações no dia do evento —</p>
+  </main>
+
+  <?!= include('shared_footer', { eventData: eventData, img: img }) ?>
+
+</body>
+</html>

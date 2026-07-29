@@ -1,0 +1,27 @@
+<!--
+  shared_footer.html — footer paroquial reutilizável.
+  Contexto obrigatório: eventData, img.
+
+  Uso (em pseudo — NÃO escrever tags de scriptlet dentro deste comentário,
+  porque o Apps Script as executa mesmo dentro de comentários HTML,
+  causando recursão):
+    include('shared_footer', { eventData: eventData, img: img })
+
+  Estilos ficam em shared_styles.html (.parish-footer ...).
+-->
+<footer class="parish-footer">
+  <? if (img && img.logo) { ?>
+    <picture>
+      <? if (img.logoWebp) { ?>
+        <source srcset="<?= img.logoWebp ?>" type="image/webp">
+      <? } ?>
+      <img class="parish-logo"
+           src="<?= img.logo ?>"
+           alt="<?= eventData.paroquia ?>"
+           width="160" height="160">
+    </picture>
+  <? } ?>
+  <div class="parish-name"><?= eventData.paroquia ?></div>
+  <div class="parish-sub"><?= eventData.cidade ?><? if (eventData.bairro) { ?> — <?= eventData.bairro ?><? } ?></div>
+  <div class="hashtag"><?= eventData.hashtag ?></div>
+</footer>

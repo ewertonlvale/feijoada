@@ -18,12 +18,12 @@
       margin-bottom: 1.8rem;
     }
     .form-eyebrow {
-      font-family: 'Caveat', cursive;
+      font-family: var(--font-script);
       color: var(--brown);
       font-size: 1.25rem;
     }
     .form-title {
-      font-family: 'Playfair Display', serif;
+      font-family: var(--font-serif);
       font-size: clamp(1.6rem, 4vw, 2.2rem);
       color: var(--red-dark);
       margin: 0.2rem 0 0.6rem;
@@ -33,87 +33,123 @@
       font-size: 0.98rem;
     }
 
-    .tier-selector {
+    /* ─────────── Banner visual das cotas (acima do formulário) ───────────
+       Cards puramente informativos mostrando as 3 cotas e seus valores.
+       Clicar num card é um atalho que marca o radio correspondente no
+       formulário abaixo, mas a fonte de verdade é o radio button. */
+    .tier-banner {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0.6rem;
-      margin-bottom: 1.6rem;
+      margin-bottom: 1.4rem;
     }
-    .tier-opt {
-      display: block;
-      position: relative;
-      border: 2px solid var(--beige-dark);
+    .tier-banner-card {
       background: var(--cream);
-      border-radius: 12px;
+      border: var(--border-md) solid var(--beige-dark);
+      border-radius: var(--radius-md);
       padding: 0.85rem 0.4rem;
       text-align: center;
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease,
-                  border-color 0.2s ease, background 0.2s ease;
+      transition: transform var(--t-base) var(--ease-out),
+                  border-color var(--t-base) var(--ease-out),
+                  background var(--t-base) var(--ease-out);
     }
-    .tier-opt:hover { transform: translateY(-2px); box-shadow: var(--shadow-soft); }
-    .tier-opt input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
-    .tier-opt .medal { font-size: 1.6rem; display: block; line-height: 1; margin-bottom: 0.2rem;
-                       transition: transform 0.2s ease; }
-    .tier-opt .name  { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 0.95rem; color: var(--text-dark); }
-    .tier-opt .val   { font-family: 'Amatic SC', cursive; font-size: 1.5rem; font-weight: 700; color: var(--red-dark); line-height: 1; margin-top: 0.15rem; }
-
-    /* ── Estado selecionado ──
-       Card sobe, borda reforçada, halo colorido por cota e
-       chip "✓ selecionada" flutuando no topo pra deixar 100% claro. */
-    .tier-opt.selected-bronze,
-    .tier-opt.selected-prata,
-    .tier-opt.selected-ouro {
-      transform: translateY(-4px);
+    @media (hover: hover) {
+      .tier-banner-card:hover { transform: translateY(-2px); border-color: var(--brown-soft); }
     }
-    .tier-opt.selected-bronze .medal,
-    .tier-opt.selected-prata  .medal,
-    .tier-opt.selected-ouro   .medal {
-      transform: scale(1.15);
+    .tier-banner-card .medal {
+      font-size: 1.7rem;
+      display: block;
+      line-height: 1;
+      margin-bottom: 0.2rem;
     }
-    .tier-opt.selected-bronze::after,
-    .tier-opt.selected-prata::after,
-    .tier-opt.selected-ouro::after {
-      content: '✓ selecionada';
-      position: absolute;
-      top: -12px; left: 50%;
-      transform: translateX(-50%);
-      font-family: 'Caveat', cursive;
+    .tier-banner-card .name {
+      font-family: var(--font-serif);
       font-weight: 700;
-      font-size: 0.9rem;
-      padding: 0.12rem 0.7rem;
-      border-radius: 999px;
-      background: var(--red-dark);
-      color: var(--cream);
-      white-space: nowrap;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-      letter-spacing: 0.3px;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      display: block;
     }
-    .tier-opt.selected-bronze {
-      border-color: var(--bronze-dark);
-      background: linear-gradient(180deg, rgba(184,115,51,0.22) 0%, rgba(184,115,51,0.06) 100%);
-      box-shadow: 0 10px 24px rgba(184,115,51,0.32),
-                  inset 0 0 0 2px rgba(184,115,51,0.25);
+    .tier-banner-card .val {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--red-dark);
+      line-height: 1;
+      display: block;
+      margin-top: 0.15rem;
     }
-    .tier-opt.selected-prata {
-      border-color: var(--prata-dark);
-      background: linear-gradient(180deg, rgba(155,155,155,0.22) 0%, rgba(155,155,155,0.06) 100%);
-      box-shadow: 0 10px 24px rgba(120,120,120,0.32),
-                  inset 0 0 0 2px rgba(155,155,155,0.30);
-    }
-    .tier-opt.selected-ouro {
-      border-color: var(--ouro-dark);
-      background: linear-gradient(180deg, rgba(212,166,59,0.30) 0%, rgba(212,166,59,0.10) 100%);
-      box-shadow: 0 10px 24px rgba(212,166,59,0.42),
-                  inset 0 0 0 2px rgba(212,166,59,0.48);
+    /* Estado "ativo" — quando o radio correspondente no form está marcado.
+       Aplicado via JS adicionando data-active="1" ao card. */
+    .tier-banner-card[data-active="1"] {
+      border-color: var(--red);
+      background: rgba(139, 46, 46, 0.06);
     }
 
+    /* ─────────── Cota (radio buttons nativos) ─────────── */
+    /* Versão simples e que sempre funciona: <input type="radio"> nativo,
+       cada opção é uma linha clicável (<label>). Quando o radio está
+       checked, o :has() seletor pinta o pai com borda vermelha. */
+    .cota-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .cota-radio {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.75rem 0.9rem;
+      background: var(--cream);
+      border: var(--border-md) solid var(--beige-dark);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: border-color var(--t-base) var(--ease-out),
+                  background var(--t-base) var(--ease-out);
+    }
+    @media (hover: hover) {
+      .cota-radio:hover { border-color: var(--brown-soft); }
+    }
+    .cota-radio input[type="radio"] {
+      margin: 0;
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      cursor: pointer;
+      accent-color: var(--red);
+    }
+    .cota-radio:has(input:focus-visible) {
+      outline: 2px solid var(--yellow-dark);
+      outline-offset: 2px;
+    }
+    .cota-radio-name {
+      flex: 1;
+      font-family: var(--font-serif);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text-dark);
+    }
+    .cota-radio-price {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--red-dark);
+      line-height: 1;
+    }
+    /* Estado selecionado — borda vermelha mais espessa e fundo tingido. */
+    .cota-radio:has(input:checked) {
+      border-color: var(--red);
+      background: rgba(139, 46, 46, 0.06);
+    }
+    .cota-radio:has(input:checked) .cota-radio-name { color: var(--red-dark); }
+
+    /* ─────────── Form card ─────────── */
     .form-card {
       background: var(--cream);
       border-radius: var(--radius);
       padding: 1.6rem 1.4rem;
       box-shadow: var(--shadow-card);
-      border: 1px solid var(--beige-dark);
+      border: var(--border-thin) solid var(--beige-dark);
     }
 
     .form-row { margin-bottom: 1.1rem; }
@@ -125,31 +161,46 @@
       margin-bottom: 0.35rem;
     }
     .form-row label .req { color: var(--red); margin-left: 2px; }
+
     .form-row input,
     .form-row textarea {
       width: 100%;
       padding: 0.75rem 0.9rem;
-      border: 1.5px solid var(--beige-dark);
-      border-radius: 10px;
-      background: var(--beige-light);
+      border: var(--border-md) solid var(--beige-dark);
+      border-radius: var(--radius-sm);
+      background: var(--cream);
       font-family: inherit;
       font-size: 1rem;
       color: var(--text-dark);
-      transition: border-color 0.2s ease, background 0.2s ease;
+      transition: border-color var(--t-base) var(--ease-out),
+                  box-shadow  var(--t-base) var(--ease-out),
+                  background  var(--t-base) var(--ease-out);
     }
-    .form-row input:focus,
-    .form-row textarea:focus {
-      outline: none;
+    /* Foco visível explícito — a11y. Substitui o outline nativo por um
+       outline próprio + box-shadow amarelo pra manter a identidade visual. */
+    .form-row input:focus-visible,
+    .form-row textarea:focus-visible {
+      outline: 2px solid var(--yellow-dark);
+      outline-offset: 2px;
       border-color: var(--yellow-dark);
       background: #FFFDF5;
     }
     .form-row textarea { min-height: 90px; resize: vertical; }
+
+    /* .form-hint com contraste adequado (WCAG AA) — antes usava text-light
+       (contraste ~3.3:1), agora text-mid (~7.5:1). */
     .form-hint {
       font-size: 0.82rem;
-      color: var(--text-light);
+      color: var(--text-mid);
       margin-top: 0.3rem;
     }
 
+    /* Honeypot anti-bot — visualmente oculto mas preenchível por scripts
+       que leem o DOM. Usa a classe utilitária .sr-only do shared_styles
+       mas com tabindex=-1 + autocomplete=off também no HTML. */
+    .hp-field { position: absolute; left: -9999px; top: -9999px; height: 0; overflow: hidden; }
+
+    /* ─────────── Botões ─────────── */
     .submit-row {
       display: flex; flex-direction: column; gap: 0.8rem;
       margin-top: 1.2rem;
@@ -161,67 +212,95 @@
       color: var(--cream);
       border: none;
       padding: 0.95rem 1.2rem;
-      border-radius: 50px;
+      border-radius: var(--radius-pill);
       font-family: inherit;
       font-weight: 700;
       font-size: 1rem;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.03em;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background  var(--t-base) var(--ease-out),
+                  transform   var(--t-base) var(--ease-out),
+                  box-shadow  var(--t-base) var(--ease-out),
+                  opacity     var(--t-base) var(--ease-out);
     }
-    .btn-submit:hover:not(:disabled) {
-      background: var(--red-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(107,31,31,0.28);
+    @media (hover: hover) {
+      .btn-submit:hover:not(:disabled) {
+        background: var(--red-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(107,31,31,0.28);
+      }
     }
-    .btn-submit:disabled { opacity: 0.6; cursor: wait; }
+    .btn-submit:focus-visible {
+      outline: 2px solid var(--yellow-dark);
+      outline-offset: 3px;
+    }
+    .btn-submit:disabled,
+    .btn-submit[aria-busy="true"] {
+      opacity: 0.6;
+      cursor: wait;
+    }
 
     .btn-whatsapp {
       display: inline-flex; align-items: center; justify-content: center;
       gap: 0.5rem;
       background: transparent;
       color: var(--green-leaf);
-      border: 2px solid var(--green-leaf);
+      border: var(--border-thick) solid var(--green-leaf);
       padding: 0.7rem 1.2rem;
-      border-radius: 50px;
+      border-radius: var(--radius-pill);
       font-weight: 700;
       text-decoration: none;
       font-size: 0.9rem;
-      transition: all 0.2s ease;
+      transition: background var(--t-base) var(--ease-out),
+                  color      var(--t-base) var(--ease-out);
     }
-    .btn-whatsapp:hover {
-      background: var(--green-leaf);
-      color: var(--cream);
+    @media (hover: hover) {
+      .btn-whatsapp:hover { background: var(--green-leaf); color: var(--cream); }
     }
-    .btn-whatsapp svg { width: 18px; height: 18px; }
+    .btn-whatsapp:focus-visible {
+      outline: 2px solid var(--green-leaf);
+      outline-offset: 3px;
+    }
+    .btn-whatsapp .icon { width: 18px; height: 18px; }
 
+    /* ─────────── Mensagem de feedback ─────────── */
+    /* Em vez de display:none, mantém no DOM com max-height:0 — preserva o
+       aria-live polite que alguns screen readers perdem quando o elemento
+       volta de display:none. */
     .form-msg {
-      display: none;
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 1rem;
       margin-top: 1rem;
-      padding: 0.85rem 1rem;
-      border-radius: 10px;
+      border-radius: var(--radius-sm);
       font-size: 0.95rem;
       line-height: 1.5;
+      border: var(--border-thin) solid transparent;
+      transition: max-height var(--t-base) var(--ease-out),
+                  padding    var(--t-base) var(--ease-out);
     }
-    .form-msg.show { display: block; }
+    .form-msg.show {
+      max-height: 240px;
+      padding: 0.85rem 1rem;
+    }
     .form-msg.error {
-      background: #FCE4E4;
-      border: 1px solid #E8B4B4;
-      color: #8A1F1F;
+      background: var(--error-bg);
+      border-color: var(--error-border);
+      color: var(--error-text);
     }
     .form-msg.info {
       background: var(--beige-light);
-      border: 1px dashed var(--beige-dark);
+      border: var(--border-thin) dashed var(--beige-dark);
       color: var(--text-mid);
     }
 
     .or-divider {
       display: flex; align-items: center; gap: 1rem;
-      margin: 0.3rem 0 0.3rem;
-      color: var(--text-light);
+      margin: 0.3rem 0;
+      color: var(--text-mid);
       font-size: 0.82rem;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 0.12em;
     }
     .or-divider::before,
     .or-divider::after {
@@ -232,7 +311,7 @@
     }
 
     @media (max-width: 680px) {
-      .tier-selector { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+      .tier-selector { gap: 0.4rem; }
       .tier-opt { padding: 0.7rem 0.3rem; }
       .tier-opt .val { font-size: 1.3rem; }
     }
@@ -240,7 +319,8 @@
 </head>
 <body>
 
-  <?!= include('shared_topbar', { siteUrl: siteUrl, currentPage: currentPage, img: img }) ?>
+  <?!= include('shared_icons') ?>
+  <?!= include('shared_topbar', { currentPage: currentPage, img: img }) ?>
 
   <main class="form-wrap">
     <div class="form-header">
@@ -252,23 +332,24 @@
       </p>
     </div>
 
+    <!-- Banner visual das cotas — referência informativa acima do form.
+         Clicar num card é atalho pra marcar o radio correspondente. -->
+    <div class="tier-banner" id="tierBanner" aria-hidden="true">
+      <? tiers.forEach(function(tier) { ?>
+        <div class="tier-banner-card" data-slug="<?= tier.slug ?>">
+          <span class="medal"><?= tier.emoji ?></span>
+          <span class="name"><?= tier.nome ?></span>
+          <span class="val">R$ <?= tier.valor ?></span>
+        </div>
+      <? }); ?>
+    </div>
+
     <form id="sponsorForm" class="form-card" novalidate>
 
-      <!-- Seletor de cota -->
-      <div class="tier-selector" id="tierSelector">
-        <? tiers.forEach(function(tier) { ?>
-          <label class="tier-opt" data-slug="<?= tier.slug ?>">
-            <input type="radio" name="cota" value="<?= tier.slug ?>">
-            <span class="medal"><?= tier.emoji ?></span>
-            <span class="name"><?= tier.nome ?></span>
-            <span class="val">R$ <?= tier.valor ?></span>
-          </label>
-        <? }); ?>
-      </div>
-
       <div class="form-row">
-        <label for="nome">Seu nome <span class="req">*</span></label>
-        <input id="nome" name="nome" type="text" autocomplete="name" maxlength="120" required>
+        <label for="nome">Seu nome <span class="req" aria-hidden="true">*</span></label>
+        <input id="nome" name="nome" type="text" autocomplete="name" maxlength="120"
+               required aria-required="true">
       </div>
 
       <div class="form-row">
@@ -277,19 +358,51 @@
         <div class="form-hint">Como quer que apareça nos materiais. Deixe em branco se for pessoa física.</div>
       </div>
 
+      <!-- Seleção de cota — radio buttons nativos, abaixo do nome da empresa -->
       <div class="form-row">
-        <label for="whatsapp">WhatsApp <span class="req">*</span></label>
-        <input id="whatsapp" name="whatsapp" type="tel" autocomplete="tel" placeholder="(86) 9 9999-9999" required>
+        <label for="cota-<?= tiers[0].slug ?>">Cota <span class="req" aria-hidden="true">*</span></label>
+        <div class="cota-options" id="cotaOptions" role="radiogroup" aria-label="Escolha a cota de patrocínio">
+          <? tiers.forEach(function(tier) { ?>
+            <label class="cota-radio">
+              <input type="radio" name="cota" value="<?= tier.slug ?>" id="cota-<?= tier.slug ?>">
+              <span class="cota-radio-name"><?= tier.nome ?></span>
+              <span class="cota-radio-price">R$ <?= tier.valor ?></span>
+            </label>
+          <? }); ?>
+        </div>
       </div>
 
       <div class="form-row">
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" autocomplete="email" maxlength="160" placeholder="para enviarmos o certificado (opcional)">
+        <label for="whatsapp">WhatsApp <span class="req" aria-hidden="true">*</span></label>
+        <input id="whatsapp" name="whatsapp" type="tel" autocomplete="tel"
+               placeholder="(86) 9 9999-9999" maxlength="30"
+               required aria-required="true">
+      </div>
+
+      <div class="form-row">
+        <label for="instagram">Instagram</label>
+        <input id="instagram" name="instagram" type="text" autocomplete="off" maxlength="80"
+               placeholder="@suaempresa">
+        <div class="form-hint">Pode informar com ou sem @. Vira botão clicável no seu card.</div>
+      </div>
+
+      <div class="form-row">
+        <label for="endereco">Endereço</label>
+        <input id="endereco" name="endereco" type="text" autocomplete="street-address" maxlength="200"
+               placeholder="Rua, número, bairro">
+        <div class="form-hint">Usamos pra gerar o link do Google Maps no seu card.</div>
       </div>
 
       <div class="form-row">
         <label for="mensagem">Mensagem (opcional)</label>
-        <textarea id="mensagem" name="mensagem" maxlength="800" placeholder="Alguma preferência, dúvida ou pedido especial?"></textarea>
+        <textarea id="mensagem" name="mensagem" maxlength="800"
+                  placeholder="Alguma preferência, dúvida ou pedido especial?"></textarea>
+      </div>
+
+      <!-- Honeypot: visualmente oculto, humanos não preenchem. -->
+      <div class="hp-field" aria-hidden="true">
+        <label for="hp-website">Não preencha</label>
+        <input id="hp-website" name="website" type="text" tabindex="-1" autocomplete="off">
       </div>
 
       <div class="submit-row">
@@ -297,10 +410,10 @@
           Enviar inscrição →
         </button>
 
-        <div class="or-divider">ou</div>
+        <div class="or-divider" aria-hidden="true">ou</div>
 
         <a class="btn-whatsapp" id="btnWhatsApp" href="#" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+          <svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
           Falar direto no WhatsApp
         </a>
       </div>
@@ -309,94 +422,114 @@
     </form>
   </main>
 
-  <footer class="parish-footer">
-    <? if (img && img.logo) { ?>
-      <img class="parish-logo" src="<?= img.logo ?>" alt="<?= eventData.paroquia ?>">
-    <? } ?>
-    <div class="parish-name"><?= eventData.paroquia ?></div>
-    <div class="parish-sub"><?= eventData.cidade ?> — Renascença</div>
-    <div class="hashtag"><?= eventData.hashtag ?></div>
-  </footer>
+  <?!= include('shared_footer', { eventData: eventData, img: img }) ?>
 
   <script>
+    'use strict';
+
+    // ╔══════════════════════════════════════════════════════════════════╗
+    // ║  ⚠️  GOTCHA — NÃO USE TEMPLATE LITERALS NESTE BLOCO  ⚠️           ║
+    // ║                                                                  ║
+    // ║  Template literals (backticks) em <script> inline dentro de      ║
+    // ║  templates do Apps Script quebram o document.write da Maestro    ║
+    // ║  (framework client-side do iframe sandbox) com erro genérico:    ║
+    // ║                                                                  ║
+    // ║    Uncaught SyntaxError: Failed to execute 'write' on            ║
+    // ║    'Document': Unexpected identifier 'X'                         ║
+    // ║                                                                  ║
+    // ║  ...onde X é a primeira palavra dentro do template. Tudo que     ║
+    // ║  estiver depois do erro NÃO RODA — listeners não registram,      ║
+    // ║  form não submete, planilha não recebe.                          ║
+    // ║                                                                  ║
+    // ║  CONCATENE com + ao invés de usar `${}`. Veja REFATORACAO.md     ║
+    // ║  seção G1 para o histórico completo do incidente (02/05/2026).   ║
+    // ╚══════════════════════════════════════════════════════════════════╝
+
+    // ── Marcador de deploy ──
+    // Esse log serve só pra confirmar (no DevTools → Console) que o
+    // build atual chegou ao browser depois do clasp push + nova
+    // implantação. Se a string abaixo NÃO aparecer no console, o
+    // navegador ainda está com a versão antiga em cache OU a nova
+    // implantação não foi efetivada no Apps Script.
+    console.log('[inscricao] build 2026-05-02-fix2 carregado · sem template literals');
+
     // Parâmetros vindos do server
-    var INITIAL_COTA  = <?= JSON.stringify(String(params.cota || '').toLowerCase()) ?>;
-    var WHATSAPP_NUM  = <?= JSON.stringify(config.WHATSAPP) ?>;
-    var EVENTO_NOME   = <?= JSON.stringify(eventData.nome) ?>;
-    var TIER_VALORES  = <?= JSON.stringify((function(){
-      var m = {};
-      tiers.forEach(function(t){ m[t.slug] = { nome: t.nome, valor: t.valor }; });
-      return m;
-    })()) ?>;
+    const INITIAL_COTA = <?= JSON.stringify(String(params.cota || '').toLowerCase()) ?>;
+    const WHATSAPP_NUM = <?= JSON.stringify(config.WHATSAPP) ?>;
+    const EVENTO_NOME  = <?= JSON.stringify(eventData.nome) ?>;
+    // TIER_VALORES é um mapa { slug → { nome, valor } } montado server-side.
+    // Mantemos os scriptlets em uma única linha cada — multi-line scriptlet
+    // dentro de uma expressão printing já causou bug raro no parser do
+    // HtmlTemplate do Apps Script.
+    <? var _tierMap = {}; tiers.forEach(function(t){ _tierMap[t.slug] = { nome: t.nome, valor: t.valor }; }); ?>
+    const TIER_VALORES = <?= JSON.stringify(_tierMap) ?>;
+    const OBRIGADO_BASE = <?= JSON.stringify(siteUrl('obrigado')) ?>;
 
-    // URL pública da tela de obrigado no domínio custom (GitHub Pages).
-    // Usado como fallback caso o back-end não devolva res.redirect.
-    function buildObrigadoUrl(cota) {
-      var base = <?= JSON.stringify(siteUrl('obrigado')) ?>;
-      return base + (cota ? (base.indexOf('?') >= 0 ? '&' : '?') + 'cota=' + encodeURIComponent(cota) : '');
-    }
+    const VALID_TIERS = Object.keys(TIER_VALORES);
 
-    var VALID_TIERS = Object.keys(TIER_VALORES);
-
-    // ── DOM refs (tudo junto pra evitar uso antes da atribuição) ──
-    var selector    = document.getElementById('tierSelector');
-    var opts        = selector.querySelectorAll('.tier-opt');
-    var btnWhatsApp = document.getElementById('btnWhatsApp');
-    var form        = document.getElementById('sponsorForm');
-    var btnSubmit   = document.getElementById('btnSubmit');
-    var msgBox      = document.getElementById('formMsg');
+    // ── DOM refs ──
+    const cotaInputs  = document.querySelectorAll('input[name="cota"]');
+    const tierCards   = document.querySelectorAll('.tier-banner-card');
+    const btnWhatsApp = document.getElementById('btnWhatsApp');
+    // Renomeado de `form` pra `formEl` — `form` colide com `window.form`
+    // exposto pelo browser quando há um <form name="form"> e com variáveis
+    // do sandbox do Apps Script, causando "Unexpected identifier 'form'"
+    // durante o parse do script.
+    const formEl      = document.getElementById('sponsorForm');
+    const btnSubmit   = document.getElementById('btnSubmit');
+    const msgBox      = document.getElementById('formMsg');
+    const hpWebsite   = document.getElementById('hp-website');
 
     // ── Helpers ──
     function getSelectedTier() {
-      var sel = selector.querySelector('input:checked');
+      const sel = document.querySelector('input[name="cota"]:checked');
       return sel ? sel.value : '';
     }
 
+    function buildObrigadoUrl(cota) {
+      // siteUrl('obrigado') nunca traz query, então o separador é sempre '?'.
+      // Concat ao invés de template literal — o iframe sandbox do Apps
+      // Script tem um bug raro onde backticks em <script> quebram o
+      // document.write da Maestro ("Failed to execute 'write' on 'Document':
+      // Unexpected identifier 'Erro'"). Concatenação é boring mas funciona.
+      return cota
+        ? OBRIGADO_BASE + '?cota=' + encodeURIComponent(cota)
+        : OBRIGADO_BASE;
+    }
+
     function updateWhatsAppLink() {
-      var slug = getSelectedTier();
-      var tier = TIER_VALORES[slug];
-      var msg = tier
+      const slug = getSelectedTier();
+      const tier = TIER_VALORES[slug];
+      const msg = tier
         ? 'Olá! Tenho interesse na cota ' + tier.nome + ' da ' + EVENTO_NOME + '.'
         : 'Olá! Tenho interesse em apoiar a ' + EVENTO_NOME + '.';
       btnWhatsApp.href = 'https://wa.me/' + WHATSAPP_NUM + '?text=' + encodeURIComponent(msg);
     }
 
-    function setTier(slug) {
-      if (!slug || VALID_TIERS.indexOf(slug) === -1) slug = 'prata';
-      opts.forEach(function(opt) {
-        var isSel = opt.getAttribute('data-slug') === slug;
-        opt.classList.toggle('selected-bronze', isSel && slug === 'bronze');
-        opt.classList.toggle('selected-prata',  isSel && slug === 'prata');
-        opt.classList.toggle('selected-ouro',   isSel && slug === 'ouro');
-        var input = opt.querySelector('input');
-        if (input) input.checked = isSel;
+    /** Atualiza o atributo data-active dos cards visuais para combinar
+     *  com o radio que está marcado. Chamado em qualquer mudança de cota. */
+    function syncBannerCards() {
+      const slug = getSelectedTier();
+      tierCards.forEach((card) => {
+        if (card.dataset.slug === slug) card.setAttribute('data-active', '1');
+        else card.removeAttribute('data-active');
       });
+    }
+
+    /** Marca o radio da cota correspondente, sincroniza os cards visuais
+     *  e atualiza o link do WhatsApp. */
+    function setTier(slug) {
+      if (!slug || !VALID_TIERS.includes(slug)) return;
+      const target = document.querySelector('input[name="cota"][value="' + slug + '"]');
+      if (target) target.checked = true;
+      syncBannerCards();
       updateWhatsAppLink();
     }
 
-    // ── Wire-up ──
-    // Clique no label troca a cota. Cobrimos dois caminhos pra robustez:
-    //   1) 'change' no container — dispara quando o radio muda (inclusive
-    //       via teclado/acessibilidade, e mesmo se o click no <input>
-    //       absoluto dentro do label não chegar a disparar o handler no
-    //       label por algum motivo).
-    //   2) 'click' em cada label — fallback pra casos em que o click em
-    //       um elemento filho do label mata o evento change.
-    selector.addEventListener('change', function(ev) {
-      if (ev.target && ev.target.name === 'cota') {
-        setTier(ev.target.value);
-      }
-    });
-    opts.forEach(function(opt) {
-      opt.addEventListener('click', function() {
-        setTier(opt.getAttribute('data-slug'));
-      });
-    });
-
-    // Pre-seleciona a cota vinda da URL (default: prata)
-    setTier(INITIAL_COTA || 'prata');
-
     function showMsg(kind, text) {
+      // Concatenação simples (evita template literal aqui — o backtick
+      // nessa posição específica já causou "Unexpected identifier 'form'"
+      // no parser do iframe sandbox do Apps Script).
       msgBox.className = 'form-msg show ' + kind;
       msgBox.textContent = text;
     }
@@ -405,53 +538,98 @@
       msgBox.textContent = '';
     }
 
-    form.addEventListener('submit', function(ev) {
+    function setSubmitting(isBusy) {
+      btnSubmit.disabled = isBusy;
+      if (isBusy) {
+        btnSubmit.setAttribute('aria-busy', 'true');
+        btnSubmit.textContent = 'Enviando…';
+      } else {
+        btnSubmit.removeAttribute('aria-busy');
+        btnSubmit.textContent = 'Enviar inscrição →';
+      }
+    }
+
+    // ── Wire-up ──
+    // Atualiza link do WhatsApp + cards visuais sempre que o usuário
+    // mudar a cota via radio. Os radios nativos cuidam do estado (checked).
+    cotaInputs.forEach((input) => {
+      input.addEventListener('change', () => {
+        syncBannerCards();
+        updateWhatsAppLink();
+      });
+    });
+
+    // Cards visuais: clicar marca o radio correspondente. É só atalho —
+    // a fonte de verdade continua sendo o radio button no formulário.
+    tierCards.forEach((card) => {
+      card.addEventListener('click', () => setTier(card.dataset.slug));
+    });
+
+    // Pre-seleciona APENAS se a cota veio na URL (?cota=ouro). Caso
+    // contrário, deixa nenhum radio marcado — o usuário escolhe ativamente.
+    // O submit valida a presença de cota e mostra erro se vazio.
+    if (INITIAL_COTA && VALID_TIERS.includes(INITIAL_COTA)) {
+      setTier(INITIAL_COTA);
+    } else {
+      // Garante que o link "Falar direto no WhatsApp" tem href válido
+      // mesmo sem cota selecionada.
+      updateWhatsAppLink();
+    }
+
+    // ── Submit ──
+    console.log('[inscricao] registrando handler de submit em', formEl);
+    formEl.addEventListener('submit', (ev) => {
+      console.log('[inscricao] submit interceptado — chamando registerSponsor');
       ev.preventDefault();
       clearMsg();
 
-      var cota = getSelectedTier();
+      const cota = getSelectedTier();
       if (!cota) { showMsg('error', 'Escolha uma cota (Bronze, Prata ou Ouro).'); return; }
 
-      var payload = {
-        cota:     cota,
-        nome:     document.getElementById('nome').value.trim(),
-        empresa:  document.getElementById('empresa').value.trim(),
-        whatsapp: document.getElementById('whatsapp').value.trim(),
-        email:    document.getElementById('email').value.trim(),
-        mensagem: document.getElementById('mensagem').value.trim()
+      const payload = {
+        cota:      cota,
+        nome:      document.getElementById('nome').value.trim(),
+        empresa:   document.getElementById('empresa').value.trim(),
+        whatsapp:  document.getElementById('whatsapp').value.trim(),
+        instagram: document.getElementById('instagram').value.trim(),
+        endereco:  document.getElementById('endereco').value.trim(),
+        mensagem:  document.getElementById('mensagem').value.trim(),
+        // Honeypot: deve sempre vir vazio. Preenchido ⇒ bot.
+        website:   hpWebsite ? hpWebsite.value : ''
       };
 
       if (!payload.nome)     { showMsg('error', 'Informe seu nome.'); return; }
       if (!payload.whatsapp) { showMsg('error', 'Informe um WhatsApp para contato.'); return; }
 
-      btnSubmit.disabled = true;
-      btnSubmit.textContent = 'Enviando…';
+      setSubmitting(true);
       showMsg('info', 'Enviando sua inscrição, um momento…');
 
+      console.log('[inscricao] payload pronto, enviando ao Apps Script:', payload);
       google.script.run
-        .withSuccessHandler(function(res) {
+        .withSuccessHandler((res) => {
+          console.log('[inscricao] resposta do server:', res);
           if (res && res.ok) {
-            // Redireciona pra tela de obrigado no domínio custom.
-            // res.redirect já vem pronto do backend (siteUrl('obrigado', {cota})),
-            // mas mantemos um fallback local caso o back-end não devolva nada.
-            var dest = (res && res.redirect) ? res.redirect : buildObrigadoUrl(cota);
+            // Redireciona pra tela de obrigado no domínio custom via
+            // postMessage — pede pro shell (top frame) navegar.
+            // window.top.location.href é interceptado pelo sandbox do
+            // Apps Script e termina em tela em branco.
+            const dest = (res && res.redirect) ? res.redirect : buildObrigadoUrl(cota);
             try {
-              window.top.location.href = dest;
+              window.top.postMessage({ type: 'navigate-top', url: dest }, '*');
             } catch (e) {
-              // Cross-origin pode lançar se o top estiver em outro domínio;
-              // mesmo domínio (feijoada-familias.pnscaparecida.com) não lança.
+              // Fallback caso postMessage falhe (improvável)
               window.location.href = dest;
             }
           } else {
-            btnSubmit.disabled = false;
-            btnSubmit.textContent = 'Enviar inscrição →';
+            setSubmitting(false);
             showMsg('error', (res && res.error) || 'Não foi possível enviar. Tente novamente ou use o WhatsApp.');
           }
         })
-        .withFailureHandler(function(err) {
-          btnSubmit.disabled = false;
-          btnSubmit.textContent = 'Enviar inscrição →';
-          showMsg('error', 'Erro no envio: ' + (err && err.message ? err.message : err) + '. Use o WhatsApp se preferir.');
+        .withFailureHandler((err) => {
+          console.error('[inscricao] failure handler:', err);
+          setSubmitting(false);
+          const errMsg = err && err.message ? err.message : String(err);
+          showMsg('error', 'Erro no envio: ' + errMsg + '. Use o WhatsApp se preferir.');
         })
         .registerSponsor(payload);
     });

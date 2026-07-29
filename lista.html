@@ -15,12 +15,12 @@
       text-align: center;
     }
     .page-eyebrow {
-      font-family: 'Caveat', cursive;
+      font-family: var(--font-script);
       font-size: 1.3rem;
       color: var(--brown);
     }
     .page-title {
-      font-family: 'Playfair Display', serif;
+      font-family: var(--font-serif);
       font-size: clamp(1.8rem, 4vw, 2.4rem);
       color: var(--red-dark);
       margin: 0.2rem 0 0.6rem;
@@ -51,42 +51,43 @@
     .group-prata  .group-badge { background: linear-gradient(135deg, var(--prata)  0%, var(--prata-dark)  100%); color: var(--cream); }
     .group-ouro   .group-badge { background: linear-gradient(135deg, var(--ouro)   0%, var(--ouro-dark)   100%); color: var(--cream); }
     .group-title {
-      font-family: 'Playfair Display', serif;
+      font-family: var(--font-serif);
       font-size: 1.4rem;
       font-weight: 700;
       color: var(--red-dark);
     }
+    /* Contraste ajustado — antes usava text-light (3.3:1), agora text-mid (7.5:1). */
     .group-count {
       font-size: 0.85rem;
-      color: var(--text-light);
+      color: var(--text-mid);
       margin-left: auto;
       font-weight: 600;
     }
 
-    .sponsors-grid {
-      display: grid;
-      gap: 1rem;
-    }
+    .sponsors-grid { display: grid; gap: 1rem; }
     .group-ouro   .sponsors-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
     .group-prata  .sponsors-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
     .group-bronze .sponsors-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
 
     .sponsor-card {
       background: var(--cream);
-      border-radius: 12px;
-      border: 1.5px solid var(--beige-dark);
+      border-radius: var(--radius-md);
+      border: var(--border-md) solid var(--beige-dark);
       padding: 1.1rem 1rem;
       display: flex; flex-direction: column; align-items: center; gap: 0.45rem;
       text-align: center;
       box-shadow: var(--shadow-soft);
-      transition: transform 0.2s ease;
+      transition: transform var(--t-base) var(--ease-out);
     }
-    .sponsor-card:hover { transform: translateY(-3px); }
+    @media (hover: hover) {
+      .sponsor-card:hover { transform: translateY(-3px); }
+    }
+
     .sponsor-logo {
       width: 100%;
       aspect-ratio: 3 / 2;
       background: var(--beige-light);
-      border-radius: 8px;
+      border-radius: var(--radius-xs);
       display: flex; align-items: center; justify-content: center;
       overflow: hidden;
     }
@@ -95,7 +96,7 @@
       object-fit: contain;
     }
     .sponsor-logo .initials {
-      font-family: 'Playfair Display', serif;
+      font-family: var(--font-serif);
       font-weight: 700;
       font-size: 1.8rem;
       color: var(--brown);
@@ -107,16 +108,50 @@
       line-height: 1.3;
     }
     .sponsor-msg {
-      font-family: 'Caveat', cursive;
+      font-family: var(--font-script);
       font-size: 1rem;
       color: var(--brown);
       line-height: 1.3;
       margin-top: 0.2rem;
     }
 
-    .group-bronze .sponsor-card { border-color: rgba(184,115,51,0.30); }
-    .group-prata  .sponsor-card { border-color: rgba(155,155,155,0.45); }
-    .group-ouro   .sponsor-card { border-color: var(--ouro); background: linear-gradient(180deg, rgba(212,166,59,0.08) 0%, var(--cream) 35%); }
+    .group-bronze .sponsor-card { border-color: color-mix(in srgb, var(--bronze) 30%, transparent); }
+    .group-prata  .sponsor-card { border-color: color-mix(in srgb, var(--prata) 45%, transparent); }
+    .group-ouro   .sponsor-card {
+      border-color: var(--ouro);
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--ouro) 8%, var(--cream)) 0%,
+        var(--cream) 35%);
+    }
+
+    /* ── Ações de contato (Instagram / WhatsApp / Endereço) ── */
+    .sponsor-actions {
+      display: flex; gap: 0.3rem;
+      margin-top: 0.6rem;
+      width: 100%;
+      padding-top: 0.5rem;
+      border-top: var(--border-thin) dashed var(--beige-dark);
+    }
+    .sponsor-action {
+      flex: 1;
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0.5rem 0.4rem;
+      background: var(--cream);
+      border: var(--border-thin) solid var(--beige-dark);
+      border-radius: var(--radius-xs);
+      text-decoration: none;
+      transition: background var(--t-base) var(--ease-out),
+                  border-color var(--t-base) var(--ease-out);
+    }
+    .sponsor-action:hover { background: var(--beige-light); border-color: var(--brown-soft); }
+    .sponsor-action:focus-visible {
+      outline: 2px solid var(--yellow-dark);
+      outline-offset: 2px;
+    }
+    .sponsor-action.ig    { color: var(--red-dark); }
+    .sponsor-action.wa    { color: var(--green-leaf); }
+    .sponsor-action.maps  { color: var(--red-dark); }
+    .sponsor-action .icon { width: 16px; height: 16px; }
 
     .state-box {
       max-width: 620px;
@@ -124,18 +159,18 @@
       padding: 2rem 1.5rem;
       text-align: center;
       background: var(--cream);
-      border: 2px dashed var(--beige-dark);
+      border: var(--border-thick) dashed var(--beige-dark);
       border-radius: var(--radius);
       color: var(--text-mid);
     }
     .state-box .state-title {
-      font-family: 'Playfair Display', serif;
+      font-family: var(--font-serif);
       font-size: 1.2rem;
       color: var(--red-dark);
       margin-bottom: 0.5rem;
     }
     .state-box .state-sub {
-      font-family: 'Caveat', cursive;
+      font-family: var(--font-script);
       font-size: 1.2rem;
       color: var(--brown);
       margin-bottom: 0.8rem;
@@ -146,25 +181,59 @@
       padding: 0.7rem 1.3rem;
       background: var(--red);
       color: var(--cream);
-      border-radius: 50px;
+      border-radius: var(--radius-pill);
       text-decoration: none;
       font-weight: 700;
-      transition: all 0.2s ease;
+      transition: background var(--t-base) var(--ease-out),
+                  transform  var(--t-base) var(--ease-out);
     }
-    .state-box .btn-cta:hover { background: var(--red-dark); transform: translateY(-2px); }
+    @media (hover: hover) {
+      .state-box .btn-cta:hover { background: var(--red-dark); transform: translateY(-2px); }
+    }
+    .state-box .btn-cta:focus-visible {
+      outline: 2px solid var(--yellow-dark);
+      outline-offset: 3px;
+    }
 
     .loading {
       text-align: center;
       padding: 2rem;
-      color: var(--text-light);
-      font-family: 'Caveat', cursive;
+      color: var(--text-mid);
+      font-family: var(--font-script);
       font-size: 1.3rem;
+    }
+
+    .bottom-cta {
+      max-width: 900px;
+      margin: 0 auto 2rem;
+      padding: 0 1.5rem;
+      text-align: center;
+    }
+    .bottom-cta a {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.85rem 1.6rem;
+      background: var(--red);
+      color: var(--cream);
+      border-radius: var(--radius-pill);
+      text-decoration: none;
+      font-weight: 700;
+      transition: background var(--t-base) var(--ease-out),
+                  transform  var(--t-base) var(--ease-out);
+    }
+    @media (hover: hover) {
+      .bottom-cta a:hover { background: var(--red-dark); transform: translateY(-2px); }
+    }
+    .bottom-cta a:focus-visible {
+      outline: 2px solid var(--yellow-dark);
+      outline-offset: 3px;
     }
   </style>
 </head>
 <body>
 
-  <?!= include('shared_topbar', { siteUrl: siteUrl, currentPage: currentPage, img: img }) ?>
+  <?!= include('shared_icons') ?>
+  <?!= include('shared_topbar', { currentPage: currentPage, img: img }) ?>
 
   <header class="page-head">
     <div class="page-eyebrow">— Com muito obrigado a —</div>
@@ -180,90 +249,174 @@
     <div class="loading">Carregando patrocinadores…</div>
   </div>
 
-  <footer class="parish-footer">
-    <? if (img && img.logo) { ?>
-      <img class="parish-logo" src="<?= img.logo ?>" alt="<?= eventData.paroquia ?>">
-    <? } ?>
-    <div class="parish-name"><?= eventData.paroquia ?></div>
-    <div class="parish-sub"><?= eventData.cidade ?> — Renascença</div>
-    <div class="hashtag"><?= eventData.hashtag ?></div>
-  </footer>
+  <?!= include('shared_footer', { eventData: eventData, img: img }) ?>
 
   <script>
-    // URLs públicas no domínio custom (GitHub Pages) geradas server-side.
-    // Links dentro desta página usam target="_top" pra sair do iframe do
-    // Apps Script e voltar pro shell correspondente em feijoada-familias.pnscaparecida.com.
-    var SITE_PATROCINADORES = <?= JSON.stringify(siteUrl('patrocinadores')) ?>;
+    'use strict';
 
-    var TIERS_ORDER = ['ouro', 'prata', 'bronze'];
-    var TIER_LABELS = {
+    // URL pública no domínio custom (GitHub Pages) gerada server-side.
+    // Usada pelos botões "Ver cotas" dos estados vazio/erro.
+    const SITE_PATROCINADORES = <?= JSON.stringify(siteUrl('patrocinadores')) ?>;
+
+    const TIERS_ORDER = ['ouro', 'prata', 'bronze'];
+    const TIER_LABELS = {
       ouro:   { label: 'Ouro',   emoji: '🥇' },
       prata:  { label: 'Prata',  emoji: '🥈' },
       bronze: { label: 'Bronze', emoji: '🥉' }
     };
 
-    var content = document.getElementById('content');
+    const content = document.getElementById('content');
 
     function initials(name) {
-      var s = (name || '').trim();
+      const s = (name || '').trim();
       if (!s) return '?';
-      var parts = s.split(/\s+/).slice(0, 2);
-      return parts.map(function(p){ return p[0] ? p[0].toUpperCase() : ''; }).join('');
+      return s.split(/\s+/).slice(0, 2)
+        .map((p) => p[0] ? p[0].toUpperCase() : '')
+        .join('');
     }
 
     function escapeHtml(s) {
       return String(s == null ? '' : s)
-        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#39;');
+    }
+
+    /**
+     * Substitui content.innerHTML e amarra um handler de clique em todos
+     * os links com target="_top". O sandbox do Apps Script intercepta
+     * target="_top" em links inseridos via innerHTML e cai num OAuth
+     * dialog (createOAuthDialog=true). window.top.location.href = X
+     * também é interceptado pelo sandbox.
+     *
+     * Solução robusta: postMessage pro shell (top frame, GitHub Pages,
+     * fora do sandbox), que faz a navegação real. O shell valida que
+     * a URL é do mesmo origin antes de navegar (anti-phishing).
+     *
+     * O href permanece no <a> — clique do meio, "abrir em nova aba" e
+     * crawlers continuam funcionando normalmente.
+     */
+    function setContent(html) {
+      content.innerHTML = html;
+      content.querySelectorAll('a[target="_top"]').forEach((a) => {
+        a.addEventListener('click', (ev) => {
+          // Permite Ctrl/Cmd+clique abrir em nova aba sem interferir.
+          if (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button !== 0) return;
+          ev.preventDefault();
+          const url = a.href;
+          try {
+            window.top.postMessage({ type: 'navigate-top', url: url }, '*');
+          } catch (e) {
+            // Fallback caso postMessage falhe (improvável)
+            window.location.href = url;
+          }
+        });
+      });
     }
 
     function renderEmpty() {
-      content.innerHTML =
-        '<div class="state-box">' +
-          '<div class="state-sub">— Ainda sem confirmados —</div>' +
-          '<div class="state-title">Seja o primeiro a apoiar!</div>' +
-          '<p>Sua marca ou nome em destaque enquanto construímos essa festa juntos.</p>' +
-          '<a class="btn-cta" href="' + SITE_PATROCINADORES + '" target="_top">Ver cotas</a>' +
-        '</div>';
+      setContent(`
+        <div class="state-box">
+          <div class="state-sub">— Ainda sem confirmados —</div>
+          <div class="state-title">Seja o primeiro a apoiar!</div>
+          <p>Sua marca ou nome em destaque enquanto construímos essa festa juntos.</p>
+          <a class="btn-cta" href="${SITE_PATROCINADORES}" target="_top">Ver cotas</a>
+        </div>`);
     }
 
     function renderError(msg) {
-      content.innerHTML =
-        '<div class="state-box">' +
-          '<div class="state-title">Não foi possível carregar a lista</div>' +
-          '<p>' + escapeHtml(msg || 'Erro desconhecido.') + '</p>' +
-          '<a class="btn-cta" href="' + SITE_PATROCINADORES + '" target="_top">Ver cotas</a>' +
-        '</div>';
+      setContent(`
+        <div class="state-box">
+          <div class="state-title">Não foi possível carregar a lista</div>
+          <p>${escapeHtml(msg || 'Erro desconhecido.')}</p>
+          <a class="btn-cta" href="${SITE_PATROCINADORES}" target="_top">Ver cotas</a>
+        </div>`);
     }
 
     function renderGroup(tierSlug, sponsors) {
       if (!sponsors.length) return '';
-      var info = TIER_LABELS[tierSlug] || { label: tierSlug, emoji: '🫘' };
-      var html = '<section class="group-section group-' + tierSlug + '">';
-      html += '<div class="group-header">';
-      html += '<div class="group-badge">' + info.emoji + '</div>';
-      html += '<div class="group-title">' + info.label + '</div>';
-      html += '<div class="group-count">' + sponsors.length + ' patrocinador' + (sponsors.length > 1 ? 'es' : '') + '</div>';
-      html += '</div>';
-      html += '<div class="sponsors-grid">';
-      sponsors.forEach(function(s) {
-        var displayName = s.empresa || s.nome || 'Patrocinador';
-        html += '<div class="sponsor-card">';
-        html += '<div class="sponsor-logo">';
-        if (s.logo_url) {
-          html += '<img src="' + escapeHtml(s.logo_url) + '" alt="' + escapeHtml(displayName) + '" loading="lazy">';
-        } else {
-          html += '<span class="initials">' + escapeHtml(initials(displayName)) + '</span>';
+      const info = TIER_LABELS[tierSlug] || { label: tierSlug, emoji: '🫘' };
+      const label = sponsors.length > 1 ? 'patrocinadores' : 'patrocinador';
+
+      const cards = sponsors.map((s) => {
+        const displayName = s.empresa || s.nome || 'Patrocinador';
+        // logo_url já vem pré-validado (só http/https) pelo backend, mas
+        // passa por escapeHtml por cinto-e-suspensório.
+        // Se a imagem falhar (404, sem rede etc.), o onerror substitui
+        // pelo bloco de iniciais — assim o card nunca fica visualmente
+        // quebrado mostrando o alt text por cima do ícone de imagem ruim.
+        const safeInitials = escapeHtml(initials(displayName));
+        // <picture> com WebP source pra reduzir ~75% do peso da logo em
+        // browsers modernos (97%+ suportam). webpFromUrl() troca .png/.jpg
+        // por .webp; convenção: admin sobe os dois lados a lado em /logos/.
+        // onerror sobe via closest() até .sponsor-logo (ultra-pai do <img>
+        // dentro do <picture>) pra trocar por iniciais se a imagem falhar.
+        const webpUrl = (function (u) {
+          const m = String(u || '').match(/^(.+)\.(png|jpe?g)$/i);
+          return m ? m[1] + '.webp' : '';
+        })(s.logo_url);
+        const sourceTag = webpUrl
+          ? '<source srcset="' + escapeHtml(webpUrl) + '" type="image/webp">'
+          : '';
+        const logoBlock = s.logo_url
+          ? '<picture>' + sourceTag +
+            '<img src="' + escapeHtml(s.logo_url) + '" alt="' + escapeHtml(displayName) + '" loading="lazy"' +
+            ' onerror="var p=this.closest(\'.sponsor-logo\');if(p)p.innerHTML=\'<span class=&quot;initials&quot;>' + safeInitials + '</span>\';">' +
+            '</picture>'
+          : '<span class="initials">' + safeInitials + '</span>';
+        const msgBlock = s.mensagem
+          ? `<div class="sponsor-msg">“${escapeHtml(s.mensagem)}”</div>`
+          : '';
+
+        // Ações de contato — só renderiza botão se a URL/número existir.
+        // Usa svg sprite carregado via shared_icons.
+        const actions = [];
+        if (s.instagram_url) {
+          actions.push(`
+            <a class="sponsor-action ig" href="${escapeHtml(s.instagram_url)}"
+               target="_blank" rel="noopener" aria-label="Instagram de ${escapeHtml(displayName)}">
+              <svg class="icon" aria-hidden="true"><use href="#icon-instagram"/></svg>
+            </a>`);
         }
-        html += '</div>';
-        html += '<div class="sponsor-name">' + escapeHtml(displayName) + '</div>';
-        if (s.mensagem) {
-          html += '<div class="sponsor-msg">“' + escapeHtml(s.mensagem) + '”</div>';
+        if (s.whatsapp_url) {
+          actions.push(`
+            <a class="sponsor-action wa" href="${escapeHtml(s.whatsapp_url)}"
+               target="_blank" rel="noopener" aria-label="WhatsApp de ${escapeHtml(displayName)}">
+              <svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
+            </a>`);
         }
-        html += '</div>';
-      });
-      html += '</div></section>';
-      return html;
+        if (s.maps_url) {
+          const titleAttr = s.endereco ? ` title="${escapeHtml(s.endereco)}"` : '';
+          actions.push(`
+            <a class="sponsor-action maps"${titleAttr} href="${escapeHtml(s.maps_url)}"
+               target="_blank" rel="noopener" aria-label="Endereço de ${escapeHtml(displayName)}">
+              <svg class="icon" aria-hidden="true"><use href="#icon-pin"/></svg>
+            </a>`);
+        }
+        const actionsBlock = actions.length
+          ? `<div class="sponsor-actions">${actions.join('')}</div>`
+          : '';
+
+        return `
+          <div class="sponsor-card">
+            <div class="sponsor-logo">${logoBlock}</div>
+            <div class="sponsor-name">${escapeHtml(displayName)}</div>
+            ${msgBlock}
+            ${actionsBlock}
+          </div>`;
+      }).join('');
+
+      return `
+        <section class="group-section group-${tierSlug}">
+          <div class="group-header">
+            <div class="group-badge" aria-hidden="true">${info.emoji}</div>
+            <div class="group-title">${info.label}</div>
+            <div class="group-count">${sponsors.length} ${label}</div>
+          </div>
+          <div class="sponsors-grid">${cards}</div>
+        </section>`;
     }
 
     function render(res) {
@@ -271,32 +424,23 @@
         renderError(res && res.error);
         return;
       }
-      var sponsors = res.sponsors || [];
+      const sponsors = res.sponsors || [];
       if (!sponsors.length) { renderEmpty(); return; }
 
-      var byTier = { ouro: [], prata: [], bronze: [] };
-      sponsors.forEach(function(s) {
+      const byTier = { ouro: [], prata: [], bronze: [] };
+      sponsors.forEach((s) => {
         if (byTier[s.cota]) byTier[s.cota].push(s);
       });
 
-      var html = '';
-      TIERS_ORDER.forEach(function(t) {
-        html += renderGroup(t, byTier[t]);
-      });
-
-      // CTA final
-      html += '<section class="page-head" style="padding-top: 0;">' +
-                '<a class="btn-cta" style="display:inline-block;margin-top:1rem;padding:0.85rem 1.6rem;background:var(--red);color:var(--cream);border-radius:50px;text-decoration:none;font-weight:700;" href="' + SITE_PATROCINADORES + '" target="_top">' +
-                  'Também quero apoiar →' +
-                '</a>' +
-              '</section>';
-
-      content.innerHTML = html;
+      const groupsHtml = TIERS_ORDER.map((t) => renderGroup(t, byTier[t])).join('');
+      // CTA "Quero Apoiar" agora vive na topbar (shared_topbar.html), então
+      // não precisa mais do botão flutuante aqui.
+      setContent(groupsHtml);
     }
 
     google.script.run
       .withSuccessHandler(render)
-      .withFailureHandler(function(err) { renderError(err && err.message ? err.message : err); })
+      .withFailureHandler((err) => renderError(err && err.message ? err.message : err))
       .listSponsors();
   </script>
 

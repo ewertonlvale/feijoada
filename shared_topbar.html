@@ -1,13 +1,23 @@
-<!-- shared_topbar.html — topbar reutilizável.
-     Requer contexto: siteUrl, currentPage, img.
-     Uso (escapado para evitar recursão do template engine):
-       &lt;?!= include('shared_topbar', { siteUrl, currentPage, img }) ?&gt;
+<!--
+  shared_topbar.html — topbar reutilizável.
+  Contexto obrigatório: currentPage, img.
 
-     Navegação:
-       Os links apontam para URLs absolutas do domínio custom (siteUrl) com
-       target="_top", forçando o browser a sair do iframe e carregar o shell
-       correspondente (docs/index.html, lista.html, inscricao.html,
-       obrigado.html), que por sua vez embute o Apps Script com ?page=...
+  Uso (em pseudo — NÃO usar tags de scriptlet dentro deste comentário):
+    include('shared_topbar', { currentPage: currentPage, img: img })
+
+  ATENÇÃO: NÃO escreva scriptlets Apps Script (abre-interrog-excl-igual ...
+  fecha-interrog) dentro de comentários HTML — o parser os executa mesmo
+  entre comentários, causando recursão infinita.
+
+  Obs.: a função siteUrl() é resolvida globalmente pelos scriptlets (V8),
+  por isso NÃO é passada no contexto — passar uma function como propriedade
+  de template pode travar o HtmlTemplate.
+
+  Navegação:
+    Os links apontam para URLs absolutas no custom domain (siteUrl) com
+    target="_top", forçando o browser a sair do iframe e carregar o shell
+    correspondente (docs/index.html, lista.html, inscricao.html,
+    obrigado.html), que por sua vez embute o Apps Script com ?page=...
 -->
 <style>
   .topbar {
@@ -23,18 +33,26 @@
     gap: 0.8rem;
     justify-content: space-between;
     box-shadow: 0 2px 12px rgba(0,0,0,0.18);
-    border-bottom: 2px solid var(--yellow);
+    border-bottom: var(--border-thick) solid var(--yellow);
   }
+  /* Usuários com "reduzir transparência" — sem blur caro. */
+  @media (prefers-reduced-transparency: reduce) {
+    .topbar {
+      background: var(--red);
+      backdrop-filter: none;
+    }
+  }
+
   .topbar-left, .topbar-right {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
   }
   .topbar .brand {
-    font-family: 'Amatic SC', cursive;
+    font-family: var(--font-display);
     font-weight: 700;
     font-size: 1.5rem;
-    letter-spacing: 1.2px;
+    letter-spacing: 0.08em;
     color: var(--yellow);
     text-decoration: none;
     line-height: 1;
@@ -53,21 +71,25 @@
     font-weight: 600;
     font-size: 0.88rem;
     padding: 0.4rem 0.9rem;
-    border-radius: 50px;
+    border-radius: var(--radius-pill);
     background: rgba(255,248,234,0.08);
-    border: 1px solid rgba(255,248,234,0.18);
-    transition: all 0.2s ease;
+    border: var(--border-thin) solid rgba(255,248,234,0.18);
+    transition: background var(--t-base) var(--ease-out);
   }
-  .topbar a.nav-link:hover {
-    background: rgba(255,248,234,0.18);
+  @media (hover: hover) {
+    .topbar a.nav-link:hover { background: rgba(255,248,234,0.18); }
+    .topbar a.nav-link.active:hover { background: var(--yellow-soft); }
   }
   .topbar a.nav-link.active {
     background: var(--yellow);
     color: var(--red-deep);
     border-color: var(--yellow);
   }
-  .topbar a.nav-link.active:hover {
-    background: var(--yellow-soft);
+  /* Foco visível (a11y) — independente de hover. */
+  .topbar a.nav-link:focus-visible,
+  .topbar .brand:focus-visible {
+    outline: 2px solid var(--yellow-soft);
+    outline-offset: 2px;
   }
 
   @media (max-width: 680px) {
@@ -75,21 +97,41 @@
     .topbar .brand { font-size: 1.35rem; }
     .topbar a.nav-link { font-size: 0.8rem; padding: 0.35rem 0.7rem; }
   }
+  /* Em telas mais estreitas (<420px), os 3 links + brand não cabem
+     na mesma linha sem comprimir demais. flex-wrap já permite quebrar,
+     e aqui reduzimos um pouco mais o gap pra não estourar. */
+  @media (max-width: 420px) {
+    .topbar { gap: 0.5rem; }
+    .topbar-right { gap: 0.35rem; }
+    .topbar a.nav-link { font-size: 0.75rem; padding: 0.3rem 0.6rem; }
+  }
 </style>
 
 <header class="topbar">
   <div class="topbar-left">
     <a class="brand" href="<?= siteUrl('patrocinadores') ?>" target="_top">
       <? if (img && img.logo) { ?>
-        <img class="brand-logo" src="<?= img.logo ?>" alt="Paróquia N. S. Conceição Aparecida">
+        <picture>
+          <? if (img.logoWebp) { ?>
+            <source srcset="<?= img.logoWebp ?>" type="image/webp">
+          <? } ?>
+          <img class="brand-logo"
+               src="<?= img.logo ?>"
+               alt="Paróquia N. S. Conceição Aparecida"
+               width="28" height="28">
+        </picture>
       <? } ?>
       <span>Feijoada das Famílias</span>
     </a>
   </div>
-  <nav class="topbar-right">
+  <nav class="topbar-right" aria-label="Navegação principal">
     <a class="nav-link <?= currentPage === 'patrocinadores' ? 'active' : '' ?>"
-       href="<?= siteUrl('patrocinadores') ?>" target="_top">Cotas</a>
+       href="<?= siteUrl('patrocinadores') ?>" target="_top">Início</a>
     <a class="nav-link <?= currentPage === 'lista' ? 'active' : '' ?>"
        href="<?= siteUrl('lista') ?>" target="_top">Patrocinadores</a>
+    <a class="nav-link <?= (currentPage === 'inscricao' || currentPage === 'obrigado') ? 'active' : '' ?>"
+       href="<?= siteUrl('inscricao') ?>" target="_top">Quero Apoiar</a>
+    <a class="nav-link <?= currentPage === 'cardapio' ? 'active' : '' ?>"
+       href="<?= siteUrl('cardapio') ?>" target="_top">Cardápio</a>
   </nav>
 </header>
