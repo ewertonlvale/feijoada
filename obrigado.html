@@ -208,7 +208,7 @@
 
     <div class="ty-actions">
       <a class="ty-btn ty-btn-primary"
-         href="<?= 'https://wa.me/' + config.WHATSAPP + '?text=' + encodeURIComponent('Olá! Acabei de me inscrever para a cota ' + (tierObj ? tierObj.nome : '') + ' da ' + eventData.nome + '. Pode me passar os próximos passos?') ?>"
+         href="<?!= 'https://wa.me/' + config.WHATSAPP + '?text=' + encodeURIComponent('Olá! Acabei de me inscrever para a cota ' + (tierObj ? tierObj.nome : '') + ' da ' + eventData.nome + '. Pode me passar os próximos passos?') ?>"
          target="_blank" rel="noopener">
         <svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
         Adiantar pelo WhatsApp

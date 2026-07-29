@@ -379,7 +379,7 @@
       <div class="contato-botoes">
         <? config.CONTATOS.forEach(function(c) { ?>
           <a class="wa-btn" target="_blank" rel="noopener"
-             href="https://wa.me/<?= c.whatsapp ?>?text=<?= encodeURIComponent('Olá! Tenho interesse em patrocinar a ' + eventData.nome + '. Podem me passar mais informações?') ?>">
+             href="https://wa.me/<?= c.whatsapp ?>?text=<?!= encodeURIComponent('Olá! Tenho interesse em patrocinar a ' + eventData.nome + '. Podem me passar mais informações?') ?>">
             <svg class="icon" aria-hidden="true"><use href="#icon-whatsapp"/></svg>
             <span><?= c.nome ?><small><?= c.numero ?></small></span>
           </a>
