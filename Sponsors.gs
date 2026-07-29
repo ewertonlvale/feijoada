@@ -119,37 +119,16 @@ function _isSafeUrl_(url) {
 /**
  * Resolve o valor do `logo_url` da planilha em uma URL absoluta.
  *
- * Aceita dois formatos:
- *   - Só nome do arquivo: "cielcursos.png"
- *     → resolve para CONFIG.IMAGES.BASE_URL + '/logos/' + nome
- *   - URL completa começando com http(s)://
- *     → valida e retorna como está (compat com linhas antigas)
+ * Agora as imagens vêm da pasta pública do Google Drive
+ * (CONFIG.DRIVE_IMAGES_FOLDER_ID). Basta salvar o NOME do arquivo na
+ * planilha — ex.: "acme.png". URLs completas (http...) ainda passam direto,
+ * mantendo compatibilidade com linhas antigas.
  *
- * Retorna string vazia se o valor for inválido (ex.: contém ".." de
- * path traversal). O front-end não exibe imagem nesses casos.
+ * A lógica de resolução (nome→URL do Drive, cache, validação e defesa
+ * contra path traversal) vive em _driveImageUrl_ (Code.gs).
  */
 function _resolveLogoUrl_(raw) {
-  if (!raw) return '';
-  const trimmed = String(raw).trim();
-  if (!trimmed) return '';
-
-  // Já é URL completa? Valida e retorna.
-  if (/^https?:\/\//i.test(trimmed)) {
-    return _isSafeUrl_(trimmed) ? trimmed : '';
-  }
-
-  // Defesa contra path traversal — bloqueia ".." em qualquer posição.
-  if (trimmed.indexOf('..') !== -1) return '';
-
-  // Aceita "cielcursos.png" ou "logos/cielcursos.png" ou similar —
-  // pega só o filename final por segurança.
-  const filename = trimmed.split(/[/\\]/).pop();
-  if (!filename) return '';
-
-  const base = String(CONFIG.IMAGES && CONFIG.IMAGES.BASE_URL || '').replace(/\/+$/, '');
-  if (!base) return '';
-
-  return base + '/logos/' + filename;
+  return _driveImageUrl_(raw);
 }
 
 // Alias histórico — alguns trechos antigos chamavam _isSafeLogoUrl_.

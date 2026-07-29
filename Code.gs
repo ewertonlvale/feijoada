@@ -265,30 +265,16 @@ function siteUrl(page, extraParams) {
  */
 function _resolveAtracoes_(atracoes, images) {
   if (!atracoes || !atracoes.length) return [];
-  var base = String((images && images.BASE_URL) || '').replace(/\/+$/, '');
   return atracoes.map(function (a) {
     var nome = String(a && a.nome || '').trim();
-    var poster = String(a && a.poster || '').trim();
-    var url = '';
-    if (poster) {
-      if (/^https?:\/\//i.test(poster)) {
-        url = poster;
-      } else if (base) {
-        // Nome só do arquivo (defesa contra path traversal — pega só o
-        // último segmento se vier algo como 'subfolder/x.png').
-        var fname = poster.split(/[/\\]/).pop();
-        if (fname && fname.indexOf('..') === -1) {
-          url = base + '/atracoes/' + fname;
-        }
-      }
-    }
-    // poster_url_webp deriva trocando a extensão. Convenção: o admin sobe
-    // .png + .webp lado a lado em /images/atracoes/. Se não houver
-    // versão WebP, _toWebp_ retorna '' e o template não emite o <source>.
+    // `poster` é o NOME do arquivo na pasta pública do Drive (ex.:
+    // 'dj_titio.png') ou uma URL completa. Resolvido via _driveImageUrl_.
+    var url = _driveImageUrl_(String(a && a.poster || '').trim());
     return {
       nome: nome,
       poster_url: url,
-      poster_url_webp: _toWebp_(url)
+      // Drive serve a imagem única (sem variante WebP separada).
+      poster_url_webp: ''
     };
   });
 }
@@ -324,6 +310,70 @@ function _toWebp_(url) {
   if (!url) return '';
   const m = String(url).match(/^(.+)\.(png|jpe?g)$/i);
   return m ? (m[1] + '.webp') : '';
+}
+
+/**
+ * Monta o mapa { nomeDoArquivo(minúsculo) -> URL pública } varrendo a pasta
+ * pública do Drive (CONFIG.DRIVE_IMAGES_FOLDER_ID). O resultado é cacheado
+ * por 5 minutos (CacheService) — subir/renomear imagem reflete em poucos
+ * minutos, sem varrer o Drive a cada visita.
+ *
+ * A URL usa o endpoint de thumbnail do Drive, que é o método confiável hoje
+ * para exibir imagens públicas do Drive em <img> (o antigo uc?export=view
+ * foi descontinuado). Aceita tamanhos grandes via sz=w<largura>.
+ *
+ * @return {Object<string,string>} mapa nome->URL (vazio se algo falhar).
+ */
+function _driveImageMap_() {
+  const folderId = String(CONFIG.DRIVE_IMAGES_FOLDER_ID || '').trim();
+  if (!folderId) return {};
+  const cache = CacheService.getScriptCache();
+  const ckey = 'driveImgMap_' + folderId;
+  const hit = cache.get(ckey);
+  if (hit) {
+    try { return JSON.parse(hit); } catch (e) { /* cache corrompido: recarrega */ }
+  }
+  const size = String(CONFIG.DRIVE_IMAGE_SIZE || 'w1600');
+  const map = {};
+  try {
+    const it = DriveApp.getFolderById(folderId).getFiles();
+    while (it.hasNext()) {
+      const f = it.next();
+      map[String(f.getName()).toLowerCase()] =
+        'https://drive.google.com/thumbnail?id=' + f.getId() + '&sz=' + size;
+    }
+  } catch (err) {
+    console.error('_driveImageMap_ falhou (verifique o ID da pasta e o compartilhamento): '
+      + (err && err.message ? err.message : err));
+    return {};
+  }
+  try { cache.put(ckey, JSON.stringify(map), 300); } catch (e) { /* >100KB: segue sem cache */ }
+  return map;
+}
+
+/**
+ * Resolve um valor de imagem (nome de arquivo na pasta do Drive OU URL
+ * completa) em uma URL pronta para <img src>.
+ *
+ *   - "acme.png"            -> URL pública do Drive (via _driveImageMap_)
+ *   - "https://.../x.png"   -> passa direto (compat com valores antigos)
+ *   - vazio / inválido / não encontrado -> '' (front-end não exibe imagem)
+ *
+ * @param {string} raw  Nome do arquivo ou URL.
+ * @return {string} URL absoluta ou ''.
+ */
+function _driveImageUrl_(raw) {
+  if (!raw) return '';
+  const s = String(raw).trim();
+  if (!s) return '';
+  // URL completa: valida e passa direto.
+  if (/^https?:\/\//i.test(s)) return /^https?:\/\/\S+$/i.test(s) ? s : '';
+  // Defesa contra path traversal e caminhos — usa só o nome do arquivo.
+  if (s.indexOf('..') !== -1) return '';
+  const filename = s.split(/[/\\]/).pop();
+  if (!filename) return '';
+  const map = _driveImageMap_();
+  return map[filename.toLowerCase()] || '';
 }
 
 /**

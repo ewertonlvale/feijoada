@@ -68,6 +68,19 @@ const CONFIG = {
     LOGO:     'logo-paroquia.png'
   },
 
+  // ───────── IMAGENS NO GOOGLE DRIVE ─────────
+  // Logos dos patrocinadores e pôsteres das atrações ficam numa pasta
+  // pública do Drive. Na planilha (coluna logo_url) e em ATRACOES (campo
+  // poster) basta o NOME do arquivo — ex.: 'acme.png' — que o app resolve
+  // para a URL pública automaticamente (com cache de alguns minutos).
+  //
+  // Pré-requisito: a pasta E as imagens precisam estar compartilhadas como
+  // "qualquer pessoa com o link pode ver".
+  // O ID fica na URL: drive.google.com/drive/folders/<ESTE_ID>
+  DRIVE_IMAGES_FOLDER_ID: '1bj7ghuATSsHWMJwgzY8MhCHcPo-ZWHr7',
+  // Tamanho servido pelo endpoint de thumbnail do Drive (largura máx).
+  DRIVE_IMAGE_SIZE: 'w1600',
+
   // ───────── EVENTO ─────────
   EVENTO: {
     nome:         'Feijotacê',
@@ -109,8 +122,8 @@ const CONFIG = {
   // Deixe `[]` (array vazio) se não houver atrações — a seção some
   // automaticamente.
 ATRACOES: [
-  { nome: 'DJ Titio',       poster: 'dj_titio.png' },
-  { nome: 'Grupo Samblack'                          }
+  { nome: 'DJ Titio',       poster: 'dj_titio.png'       },
+  { nome: 'Grupo Samblack', poster: 'grupo_samblack.png' }
 ],
 
   // ───────── COTAS DE PATROCÍNIO ─────────
