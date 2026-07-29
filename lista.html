@@ -341,7 +341,7 @@
       const label = sponsors.length > 1 ? 'patrocinadores' : 'patrocinador';
 
       const cards = sponsors.map((s) => {
-        const displayName = s.empresa || s.nome || 'Patrocinador';
+        const displayName = s.empresa || 'Patrocinador';
         // logo_url já vem pré-validado (só http/https) pelo backend, mas
         // passa por escapeHtml por cinto-e-suspensório.
         // Se a imagem falhar (404, sem rede etc.), o onerror substitui

@@ -27,7 +27,7 @@ const SHEET_HEADERS = [
 ];
 
 /** Status que fazem o patrocinador aparecer na galeria pública. */
-const VISIBLE_STATUSES = { confirmado: true, pago: true };
+const VISIBLE_STATUSES = { confirmado: true };
 
 /** Cache do listSponsors. TTL curto pra refletir edições do admin. */
 const SPONSORS_CACHE_KEY = 'sponsors_v2';
@@ -311,7 +311,7 @@ function registerSponsor(input) {
 
 /**
  * Lista patrocinadores confirmados para exibir na galeria pública.
- * Só devolve linhas com status = "confirmado" ou "pago".
+ * Só devolve linhas com status = "confirmado".
  *
  * Faz validação defensiva do schema: se alguém renomear uma coluna na
  * planilha, devolve erro explícito em vez de esconder tudo silenciosamente.

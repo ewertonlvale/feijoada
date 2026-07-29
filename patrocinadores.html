@@ -1226,7 +1226,7 @@
       }
 
       function logoBlock(s, klass) {
-        const display = s.empresa || s.nome || 'Patrocinador';
+        const display = s.empresa || 'Patrocinador';
         const safeInitials = escapeHtml(initials(display));
         if (s.logo_url) {
           // Fallback se a imagem falhar (404 etc.): troca o conteúdo do
@@ -1253,7 +1253,7 @@
       }
 
       function ouroCardHtml(s) {
-        const display = s.empresa || s.nome || 'Patrocinador';
+        const display = s.empresa || 'Patrocinador';
         const actions = renderActions(s, 'labeled');
         const actionsHtml = actions
           ? '<div class="pat-actions">' + actions + '</div>'
@@ -1272,7 +1272,7 @@
       }
 
       function pbCardHtml(s) {
-        const display = s.empresa || s.nome || 'Patrocinador';
+        const display = s.empresa || 'Patrocinador';
         const tierClass = s.cota === 'prata' ? 'prata' : 'bronze';
         const tierLabel = s.cota === 'prata' ? 'Prata' : 'Bronze';
         const actions = renderActions(s, 'icon');
