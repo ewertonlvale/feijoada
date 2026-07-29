@@ -73,7 +73,7 @@
   // pra qualquer link que precisa sair do iframe.
   //
   // Mensagem esperada:
-  //   { type: 'navigate-top', url: 'https://feijoada-familias.pnscaparecida.com/inscricao.html' }
+  //   { type: 'navigate-top', url: 'https://feijotace.pnscaparecida.com/inscricao.html' }
   //
   // Por segurança, só aceita URLs do mesmo origin do shell — bloqueia
   // tentativas de redirecionar pra phishing externo.

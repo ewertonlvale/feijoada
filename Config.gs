@@ -39,7 +39,7 @@ const CONFIG = {
   // Todos os links internos gerados pelo Apps Script usam essa base +
   // target="_top" pra fazer navegação real do navegador — assim a URL bar
   // sempre reflete a página aberta e o usuário nunca sai do domínio custom.
-  CUSTOM_BASE_URL: 'https://feijoada-familias.pnscaparecida.com',
+  CUSTOM_BASE_URL: 'https://feijotace.pnscaparecida.com',
 
   // ───────── CONTATO ─────────
   // WhatsApp principal da equipe responsável pela captação (sem +, sem espaços).
@@ -63,7 +63,7 @@ const CONFIG = {
   //
   // Se for trocar de host, basta editar a BASE_URL aqui.
   IMAGES: {
-    BASE_URL: 'https://feijoada-familias.pnscaparecida.com/images',
+    BASE_URL: 'https://feijotace.pnscaparecida.com/images',
     SERTAO:   'sertao-forro.png',
     LOGO:     'logo-paroquia.png'
   },
